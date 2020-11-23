@@ -1,8 +1,8 @@
 //===============================================================
-//  Name:           LedsTest.cpp
+//  Name:           UsePinsWiringPi.cpp
 //  Author:         Nigel de Vos
 //  Version:        1.0
-//  Description:    Basic GPIO usage in C++
+//  Description:    Basic GPIO with wiringPi in C++
 //===============================================================
 
 #include <iostream>             // Include all needed libraries here
