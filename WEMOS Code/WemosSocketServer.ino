@@ -2,14 +2,11 @@
 #include <stdlib.h>
 
 // Replace with your network credentials
-const char* ssid     = "AIVD_SurveillanceBusje";
-const char* password = "Homohol2019!";
+const char* ssid     = "SSID";
+const char* password = "WPA-2PSK";
 
-// Set web server port number to 80
+// Set web server port number to 8080
 WiFiServer socketServer(8080);
-
-// Variable to store the HTTP request
-String header;
 
 // Auxiliar variables to store the current output state
 String output5State = "off";
@@ -19,16 +16,6 @@ String output4State = "off";
 const int output5 = D5;
 const int output4 = 4;
 const int input0 = A0;
-
-int lichtSterkte;
-char* lichtSterkteString;
-
-// Current time
-unsigned long currentTime = millis();
-// Previous time
-unsigned long previousTime = 0; 
-// Define timeout time in milliseconds (example: 2000ms = 2s)
-const long timeoutTime = 2000;
 
 void setup() {
   Serial.begin(115200);
@@ -48,7 +35,7 @@ void setup() {
     delay(1000);
     Serial.print("Connecting...");
   }
-  // Print local IP address and start web server
+  // Print local IP address and start Socket Server
   Serial.println("");
   Serial.print("========= WiFi connected. IP:");
   Serial.print(WiFi.localIP());
@@ -59,29 +46,32 @@ void setup() {
 }
 
 void loop(){
+  // Listen for incoming clients
+  WiFiClient client = socketServer.available();   
   
-  WiFiClient client = socketServer.available();   // Listen for incoming clients
-  
-  if (client) {                             // If a new client connects,
-    Serial.println("New Client is connected");          // print a message out in the serial port
-    String currentLine = "";                // make a String to hold incoming data from the client
-    currentTime = millis();
-    previousTime = currentTime;
+  // If a new client connects,
+  if (client) { 
+    Serial.println("New Client is connected"); 
+	
+    // make a String (buffer) to hold incoming data from the client
+	String buffer = "";                		
     if (client) {
  
     while (client.connected()) {
  
-      while (client.available()>0) {
+		while (client.available()>0) {
+		//Stores buffer in string c  
         char c = client.read();
+		//prints c to monitor
         Serial.write(c);
+		//writes Acknowledged back to client.
         client.write("Acknowledged");
-       
-      }
- 
-      delay(10); 
+		}
+	
+		delay(10); 
     }
     Serial.println("");
-    client.stop();
+    client.stop();							//Socket Server closes socket, maybe change this so the client closes the connection.
   
     Serial.println("Client disconnected");
  
