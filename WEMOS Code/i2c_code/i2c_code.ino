@@ -53,6 +53,17 @@ void LED1_uit() {
   Wire.endTransmission();
 }
 
+boolean PIR_sensor() {
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x00));      
+  Wire.endTransmission();
+  Wire.requestFrom(0x38, 1);   
+  unsigned int buttonStaat = Wire.read();
+  if (buttonStaat  & 0x01) {
+    return true;
+  } else { return false; }
+}
+
 //------------------Door------------------
 void LED1_aan() {
   Wire.beginTransmission(0x38); 
@@ -308,5 +319,6 @@ int Check_potentiometer() {
   unsigned int anin1 = Wire.read()&0x03;  
   anin1=anin1<<8;
   anin1 = anin1|Wire.read(); 
+  
   return anin1;
 }
