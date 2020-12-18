@@ -39,12 +39,18 @@ void config_MAX11647() {
 }
 
 //------------------Table-Lamp------------------
-void LED_aan() {
-  
+void LED1_aan() {
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x01));
+  Wire.write(byte(0x01<<4));
+  Wire.endTransmission();
 }
 
-void LED_uit() {
-  
+void LED1_uit() {
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x01));
+  Wire.write(byte(0x00<<4));
+  Wire.endTransmission();
 }
 
 //------------------Door------------------
@@ -88,9 +94,9 @@ boolean Check_pushbutton1 {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 0);   
+  Wire.requestFrom(0x38, 1);   
   unsigned int buttonStaat = Wire.read();
-  if (buttonStaat == 1) {
+  if (buttonStaat  & 0x01) {
     return true;
   } else { return false; }
 }
@@ -101,14 +107,24 @@ boolean Check_pushbutton2 {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);   
   unsigned int buttonStaat = Wire.read();
-  if (buttonStaat == 1) {
+  if ((buttonStaat >> 1)  & 0x01) {
     return true;
   } else { return false; }
 }
 
 //------------------Fridge------------------
-void fan_snelheid(uint8_t snelheid) {
-  
+void fan_aan() {
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x01));
+  Wire.write(byte(0x01<<4));
+  Wire.endTransmission();
+}
+
+void fain_uit() {
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x01));
+  Wire.write(byte(0x00<<4));
+  Wire.endTransmission();
 }
 
 void Peltier_aan() {
@@ -123,15 +139,33 @@ boolean Check_switch {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 0);   
+  Wire.requestFrom(0x38, 1);   
   unsigned int buttonStaat = Wire.read();
-  if (buttonStaat == 1) {
+  if ((buttonStaat)  & 0x01) {
     return true;
   } else { return false; }
 }
 
 int checkTemperatuur1 {
-  
+  Wire.requestFrom(0x36, 4);
+  unsigned int anin0 = Wire.read()&0x03;
+  anin0=anin0<<8;
+  anin0 = anin0|Wire.read();  
+  unsigned int anin1 = Wire.read()&0x03;  
+  anin1=anin1<<8;
+  anin1 = anin1|Wire.read(); 
+  return anin0;
+}
+
+int checkTemperatuur2 {
+  Wire.requestFrom(0x36, 4);
+  unsigned int anin0 = Wire.read()&0x03;
+  anin0=anin0<<8;
+  anin0 = anin0|Wire.read();  
+  unsigned int anin1 = Wire.read()&0x03;  
+  anin1=anin1<<8;
+  anin1 = anin1|Wire.read(); 
+  return anin1;
 }
 
 //------------------Chair------------------
@@ -167,9 +201,9 @@ boolean Check_pushbutton1 {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 0);   
+  Wire.requestFrom(0x38, 1);   
   unsigned int buttonStaat = Wire.read();
-  if (buttonStaat == 1) {
+  if ((buttonStaat)  & 0x01) {
     return true;
   } else { return false; }
 }
@@ -193,9 +227,9 @@ boolean Check_pushbutton1 {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);   
+  Wire.requestFrom(0x38, 1);    
   unsigned int buttonStaat = Wire.read();
-  if (buttonStaat == 1) {
+  if ((buttonStaat)  & 0x01) {
     return true;
   } else { return false; }
 }
@@ -206,17 +240,6 @@ void LED1_aan() {
   Wire.write(byte(0x01));
   Wire.write(byte(0x01<<5));
   Wire.endTransmission();
-}
-
-boolean Check_pushbutton1 {
-  Wire.beginTransmission(0x38); 
-  Wire.write(byte(0x00));      
-  Wire.endTransmission();
-  Wire.requestFrom(0x38, 0);   
-  unsigned int buttonStaat = Wire.read();
-  if (buttonStaat == 1) {
-    return true;
-  } else { return false; }
 }
 
 void LED1_uit() {
@@ -238,4 +261,52 @@ void buzzer_uit() {
   Wire.write(byte(0x01));
   Wire.write(byte(0x00<<4));
   Wire.endTransmission();
+}
+
+boolean Check_pushbutton1 {
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x00));      
+  Wire.endTransmission();
+  Wire.requestFrom(0x38, 1);   
+  unsigned int buttonStaat = Wire.read();
+  if ((buttonStaat)  & 0x01) {
+    return true;
+  } else { return false; }
+}
+
+//------------------Wall------------------
+void LCD_panel_aan() {
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x01));
+  Wire.write(byte(0x01<<4));
+  Wire.endTransmission();
+}
+
+void LCD_panel_uit() {
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x01));
+  Wire.write(byte(0x00<<4));
+  Wire.endTransmission();
+}
+
+int Check_LDR() {
+  Wire.requestFrom(0x36, 4);
+  unsigned int anin0 = Wire.read()&0x03;
+  anin0=anin0<<8;
+  anin0 = anin0|Wire.read();  
+  unsigned int anin1 = Wire.read()&0x03;  
+  anin1=anin1<<8;
+  anin1 = anin1|Wire.read();
+  return anin0;
+}
+
+int Check_potentiometer() {
+  Wire.requestFrom(0x36, 4);
+  unsigned int anin0 = Wire.read()&0x03;
+  anin0=anin0<<8;
+  anin0 = anin0|Wire.read();  
+  unsigned int anin1 = Wire.read()&0x03;  
+  anin1=anin1<<8;
+  anin1 = anin1|Wire.read(); 
+  return anin1;
 }
