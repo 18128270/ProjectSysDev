@@ -49,7 +49,7 @@ void loop(void) {
   Wire.requestFrom(0x38, 1);   
   unsigned int inputs = Wire.read();  
   Serial.print("Digital in: ");
-  Serial.println(inputs&0x0F);  
+  Serial.println(inputs&0x0F); //output ----1111 of 16 dus niet 0/1 
 
   //Config MAX11647
   //Inside loop for debugging purpose (hot plugging wemos module into i/o board). 

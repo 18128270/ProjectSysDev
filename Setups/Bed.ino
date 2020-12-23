@@ -105,6 +105,9 @@ void LED1_off() {
 }
 
 boolean Check_Led1() {
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x00));      
+  Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   uint ledState = Wire.read();  
   if (ledState & 0x01) { //00000001 dus 1
@@ -115,7 +118,7 @@ boolean Check_Led1() {
 }
 
 boolean Check_Pushbutton1() {
-   Wire.beginTransmission(0x38); 
+  Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);   

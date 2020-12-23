@@ -54,13 +54,12 @@ void LED1_off() {
 }
 
 boolean Check_Led1() {
-  Wire.beginTransmission(0x38);
-  Wire.write(byte(0x01));
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  uint ledState = Wire.read();
-
-  if ledState & 0b0001 {
+  uint ledState = Wire.read();  
+  if (ledState && 0x01) { //00000001 dus 1
     return 1;
   } else {
     return 0;
@@ -109,13 +108,12 @@ void Motor_off() {
 
 //check port DO4
 boolean Check_Led1() {
-  Wire.beginTransmission(0x38);
-  Wire.write(byte(0x01));
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-
-  uint ledState = Wire.read();
-  if ledState & 0b0001 {
+  uint ledState = Wire.read();  
+  if (ledState && 0x01) { //00000001 dus 1
     return 1;
   } else {
     return 0;
@@ -170,15 +168,12 @@ void buzzer_off() {
 }
 
 boolean Check_Led1() {
-  Wire.beginTransmission(0x38);
-  Wire.write(byte(0x01));
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  
-  //return Wire.read(); This would be possible too.
-  uint ledState = Wire.read();
-  // For debug use this
-  if ledState & 0x01 {
+  uint ledState = Wire.read();  
+  if (ledState && 0x01) { //00000001 dus 1
     return 1;
   } else {
     return 0;
@@ -234,15 +229,12 @@ void Door_close() {
 }
 
 boolean Check_Led1() {
-  Wire.beginTransmission(0x38);
-  Wire.write(byte(0x01));
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  
-  //return Wire.read(); This would be possible too.
-  uint ledState = Wire.read();
-  // For debug use this
-  if ledState & 0x01 {
+  uint ledState = Wire.read();  
+  if (ledState && 0x01) { //00000001 dus 1
     return 1;
   } else {
     return 0;
@@ -250,15 +242,12 @@ boolean Check_Led1() {
 }
 
 boolean Check_Led2() {
-  Wire.beginTransmission(0x38);
-  Wire.write(byte(0x01));
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 2);
-  
-  //return Wire.read(); This would be possible too.
-  uint ledState = Wire.read();
-  // For debug use this
-  if ledState >> 1 & 0x01 {
+  Wire.requestFrom(0x38, 1);
+  uint ledState = Wire.read();  
+  if (ledState && 0x02) { //00000010 dus 2
     return 1;
   } else {
     return 0;
