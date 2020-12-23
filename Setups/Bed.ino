@@ -105,14 +105,21 @@ void LED1_off() {
 }
 
 boolean Check_Led1() {
+  Wire.requestFrom(0x38, 1);
+  uint ledState = Wire.read();  
+  if (ledState & 0x01) { //00000001 dus 1
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
-boolean Check_pushbutton1 {
-  Wire.beginTransmission(0x38); 
+boolean Check_Pushbutton1() {
+   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);   
-  unsigned int buttonState = Wire.read();
+  uint buttonState = Wire.read();
   if (buttonState  & 0x01) {
     return true;
   } else { return false; }

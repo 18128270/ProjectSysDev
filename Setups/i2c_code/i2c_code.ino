@@ -53,7 +53,21 @@ void LED1_off() {
   Wire.endTransmission();
 }
 
-boolean Check_pushbutton1 {
+boolean Check_Led1() {
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x01));
+  Wire.endTransmission();
+  Wire.requestFrom(0x38, 1);
+  uint ledState = Wire.read();
+
+  if ledState & 0b0001 {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+boolean Check_pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
@@ -93,7 +107,29 @@ void Motor_off() {
   Wire.endTransmission();
 }
 
-boolean Check_pushbutton1 {
+//check port DO4
+boolean Check_Led1() {
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x01));
+  Wire.endTransmission();
+  Wire.requestFrom(0x38, 1);
+
+  uint ledState = Wire.read();
+  if ledState & 0b0001 {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+boolean Check_Motor(){
+  Wire.begintransmission(0x38);
+  Wire.write(byte(0x01));
+  Wire.endTransmission();
+  Wire.requestFrom(0x38, 1);
+}
+
+boolean Check_Pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
@@ -133,7 +169,23 @@ void buzzer_off() {
   Wire.endTransmission();
 }
 
-boolean Check_pushbutton1 {
+boolean Check_Led1() {
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x01));
+  Wire.endTransmission();
+  Wire.requestFrom(0x38, 1);
+  
+  //return Wire.read(); This would be possible too.
+  uint ledState = Wire.read();
+  // For debug use this
+  if ledState & 0x01 {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+boolean Check_pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
@@ -181,7 +233,39 @@ void Door_close() {
   doorServo.write(doorClose);
 }
 
-boolean Check_pushbutton1 {
+boolean Check_Led1() {
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x01));
+  Wire.endTransmission();
+  Wire.requestFrom(0x38, 1);
+  
+  //return Wire.read(); This would be possible too.
+  uint ledState = Wire.read();
+  // For debug use this
+  if ledState & 0x01 {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+boolean Check_Led2() {
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x01));
+  Wire.endTransmission();
+  Wire.requestFrom(0x38, 2);
+  
+  //return Wire.read(); This would be possible too.
+  uint ledState = Wire.read();
+  // For debug use this
+  if ledState >> 1 & 0x01 {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+boolean Check_Pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
@@ -192,7 +276,7 @@ boolean Check_pushbutton1 {
   } else { return false; }
 }
 
-boolean Check_pushbutton2 {
+boolean Check_Pushbutton2() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
@@ -204,6 +288,7 @@ boolean Check_pushbutton2 {
 }
 
 //------------------Fridge------------------
+// only Check_FridgeDoor should be needed
 void fan_on() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x01));
@@ -226,7 +311,7 @@ void Peltier_off() {
   digitalWrite(D5, LOW);
 }
 
-boolean Check_switch {
+boolean Check_FridgeDoor() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
@@ -237,7 +322,7 @@ boolean Check_switch {
   } else { return false; }
 }
 
-int checkTemperature1 {
+int checkTemperature1() {
   Wire.requestFrom(0x36, 4);
   unsigned int anin0 = Wire.read()&0x03;
   anin0=anin0<<8;
@@ -248,7 +333,7 @@ int checkTemperature1 {
   return anin0;
 }
 
-int checkTemperature2 {
+int checkTemperature2() {
   Wire.requestFrom(0x36, 4);
   unsigned int anin0 = Wire.read()&0x03;
   anin0=anin0<<8;

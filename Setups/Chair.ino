@@ -125,7 +125,7 @@ boolean Check_Led1() {
 boolean Check_Motor() {
 }
 
-boolean Check_pushbutton1 {
+boolean Check_pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();

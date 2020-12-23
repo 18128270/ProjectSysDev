@@ -134,15 +134,33 @@ void Door_close() {
 }
 
 boolean Check_Led1() {
+  Wire.requestFrom(0x38, 1);
+  while (Wire.available()){
+  uint ledState = Wire.read();  
+  }
+  if (ledState & 0x01) || (ledState & 0x03) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 boolean Check_Led2() {
+  Wire.requestFrom(0x38, 1);
+  while (Wire.available()){
+  uint ledState = Wire.read();  
+  }
+  if (ledState & 0x02) || (ledState & 0x03) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 boolean Check_Door() {
 }
 
-boolean Check_pushbutton1 {
+boolean Check_pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
@@ -153,7 +171,7 @@ boolean Check_pushbutton1 {
   } else { return false; }
 }
 
-boolean Check_pushbutton2 {
+boolean Check_pushbutton2() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
