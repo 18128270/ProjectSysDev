@@ -10,7 +10,7 @@
 ## Chair.ino
 	[Here](/Chair.ino)
 ## Column.ino
-	[Here](Column.ino)
+	[Here](./Column.ino)
 ## Door.ino
 	[Here](ProjectSysDev/Setups (WEMOS)/Door.ino)
 ## Fridge.ino
