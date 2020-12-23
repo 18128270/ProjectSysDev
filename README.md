@@ -1,24 +1,25 @@
 ### Github Project System Development ###
 
 # Raspberry Code
+[Link]()
 
 # WEMOS Code
-	Under the WEMOS Code subsection you can find the individual programs for the used setups. 
-		I.E. The program that runs on the bed is found under [Setups (WEMOS)/Bed.ino](ProjectSysDev/Setups (WEMOS)/Bed.ino)
+Under the WEMOS Code subsection you can find the individual programs for the used setups. 
+	I.E. The program that runs on the bed is found under [../Setups/Bed.ino](../Setups/Bed.ino)
 ## Bed.ino
-	[Here](18128270/ProjectSysDev/Setups (WEMOS)/Bed.ino)
+[here](../Setups/Bed.ino)
 ## Chair.ino
-	[Here](/Chair.ino)
+[Here](../Setups/Chair.ino)
 ## Column.ino
-	[Here](./Column.ino)
+[Here](../Setups/Column.ino)
 ## Door.ino
-	[Here](ProjectSysDev/Setups (WEMOS)/Door.ino)
+[Here](../Setups/Door.ino)
 ## Fridge.ino
-	[Here](ProjectSysDev/Setups (WEMOS)/Fridge.ino)
+[Here](../Setups/Fridge.ino)
 ## Table-Lamp.ino
-	[Here](ProjectSysDev/Setups (WEMOS)/Table-Lamp.ino)
+[Here](../Setups/Table-Lamp.ino)
 ## Wall.ino
-	[Here](ProjectSysDev/Setups (WEMOS)/Wall.ino)
+[Here](../Setups/Wall.ino)
 
 
 
