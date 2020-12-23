@@ -72,8 +72,9 @@ void loop(){
 		delay(10); 
     }
     Serial.println("");
-    client.stop();							//Socket Server closes socket, maybe change this so the client closes the connection.
-  
+	
+    //Socket Server closes socket, maybe change this so the client closes the connection.
+	client.stop();
     Serial.println("Client disconnected");
  
     }

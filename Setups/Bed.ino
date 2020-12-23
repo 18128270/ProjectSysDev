@@ -20,7 +20,6 @@ void setup() {
   
   // Start Wire.h
   Wire.begin();
-  
  
   // Connect to Wi-Fi network with SSID and password
   Serial.print("Connecting to ");
@@ -66,8 +65,9 @@ void loop(){
 		delay(10); 
     }
     Serial.println("");
-    client.stop();							//Socket Server closes socket, maybe change this so the client closes the connection.
-  
+	
+    //Socket Server closes socket, maybe change this so the client closes the connection.
+	client.stop();
     Serial.println("Client disconnected");
  
     }

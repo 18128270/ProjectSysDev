@@ -27,16 +27,6 @@ Under the WEMOS Code subsection you can find the individual programs for the use
 ![Class Diagram](./Images/Wall.png)
 [./Setups/Wall.ino](./Setups/Wall.ino)
 
-
-
-
-
-
-
-
-
-
-
 Project System Development
 	Domitica project van groep NSE-D3-gp11 te HHS, Delft
 	
