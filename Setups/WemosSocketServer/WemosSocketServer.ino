@@ -8,25 +8,9 @@ const char* password = "WPA-2PSK";
 // Set web server port number to 8080
 WiFiServer socketServer(8080);
 
-// Auxiliar variables to store the current output state
-String output5State = "off";
-String output4State = "off";
-
-// Assign output variables to GPIO pins
-const int output5 = D5;
-const int output4 = 4;
-const int input0 = A0;
-
 void setup() {
   Serial.begin(115200);
-  // Initialize the output variables as outputs
-  pinMode(output5, OUTPUT);
-  pinMode(output4, OUTPUT);
-  pinMode(input0, INPUT);
-  // Set outputs to LOW
-  digitalWrite(output5, LOW);
-  digitalWrite(output4, LOW);
-
+ 
   // Connect to Wi-Fi network with SSID and password
   Serial.print("Connecting to ");
   Serial.println(ssid);
