@@ -4,21 +4,21 @@
 
 # WEMOS Code
 	Under the WEMOS Code subsection you can find the individual programs for the used setups. 
-		I.E. The program that runs on the bed is found under [Setups (WEMOS)/Bed.ino](../Setups (WEMOS)/Bed.ino)
+		I.E. The program that runs on the bed is found under [Setups (WEMOS)/Bed.ino](ProjectSysDev/Setups (WEMOS)/Bed.ino)
 ## Bed.ino
-	[Here](../Setups (WEMOS)/Bed.ino)
+	[Here](ProjectSysDev/Setups (WEMOS)/Bed.ino)
 ## Chair.ino
-	[Here](../Setups (WEMOS)/Chair.ino)
+	[Here](ProjectSysDev/Setups (WEMOS)/Chair.ino)
 ## Column.ino
-	[Here](../Setups (WEMOS)/Column.ino)
+	[Here](ProjectSysDev/Setups (WEMOS)/Column.ino)
 ## Door.ino
-	[Here](../Setups (WEMOS)/Door.ino)
+	[Here](ProjectSysDev/Setups (WEMOS)/Door.ino)
 ## Fridge.ino
-	[Here](../Setups (WEMOS)/Fridge.ino)
+	[Here](ProjectSysDev/Setups (WEMOS)/Fridge.ino)
 ## Table-Lamp.ino
-	[Here](../Setups (WEMOS)/Table-Lamp.ino)
+	[Here](ProjectSysDev/Setups (WEMOS)/Table-Lamp.ino)
 ## Wall.ino
-	[Here](../Setups (WEMOS)/Wall.ino)
+	[Here](ProjectSysDev/Setups (WEMOS)/Wall.ino)
 
 
 
