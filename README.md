@@ -8,9 +8,9 @@
 ## Bed.ino
 	[Here](18128270/ProjectSysDev/Setups (WEMOS)/Bed.ino)
 ## Chair.ino
-	[Here](ProjectSysDev/Setups (WEMOS)/Chair.ino)
+	[Here](/Chair.ino)
 ## Column.ino
-	[Here](ProjectSysDev/Setups (WEMOS)/Column.ino)
+	[Here](Column.ino)
 ## Door.ino
 	[Here](ProjectSysDev/Setups (WEMOS)/Door.ino)
 ## Fridge.ino
