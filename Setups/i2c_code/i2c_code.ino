@@ -59,7 +59,7 @@ boolean Check_Led1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   uint ledState = Wire.read();  
-  if (ledState && 0x01) { //00000001 dus 1
+  if (ledState & 0x10) { //Check output D04
     return 1;
   } else {
     return 0;
@@ -73,8 +73,9 @@ boolean Check_pushbutton1() {
   Wire.requestFrom(0x38, 1);    
   unsigned int buttonState = Wire.read();
   if ((buttonState)  & 0x01) {
-    return true;
-  } else { return false; }
+    return 1;
+  } else { 
+    return 0; }
 }
 
 //------------------Chair------------------
@@ -106,14 +107,14 @@ void Motor_off() {
   Wire.endTransmission();
 }
 
-//check port DO4
+//check port output DO4
 boolean Check_Led1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   uint ledState = Wire.read();  
-  if (ledState && 0x01) { //00000001 dus 1
+  if (ledState & 0x10) {
     return 1;
   } else {
     return 0;
@@ -121,7 +122,7 @@ boolean Check_Led1() {
 }
 
 boolean Check_Motor(){
-  Wire.begintransmission(0x38);
+  Wire.beginTransmission(0x38);
   Wire.write(byte(0x01));
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
@@ -134,8 +135,9 @@ boolean Check_Pushbutton1() {
   Wire.requestFrom(0x38, 1);   
   unsigned int buttonState = Wire.read();
   if ((buttonState)  & 0x01) {
-    return true;
-  } else { return false; }
+    return 1;
+  } else { 
+    return 0; }
 }
 
 //------------------Column------------------
@@ -173,10 +175,10 @@ boolean Check_Led1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   uint ledState = Wire.read();  
-  if (ledState && 0x01) { //00000001 dus 1
-    return 1;
+  if (ledState & 0x10) { //Check output D04
+     return 1;
   } else {
-    return 0;
+     return 0;
   }
 }
 
@@ -187,8 +189,9 @@ boolean Check_pushbutton1() {
   Wire.requestFrom(0x38, 1);   
   unsigned int buttonState = Wire.read();
   if ((buttonState)  & 0x01) {
-    return true;
-  } else { return false; }
+     return 1;
+  } else {
+     return 0; }
 }
 
 //------------------Door------------------
@@ -234,7 +237,7 @@ boolean Check_Led1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   uint ledState = Wire.read();  
-  if (ledState && 0x01) { //00000001 dus 1
+  if (ledState & 0x01) { //00000001 dus 1
     return 1;
   } else {
     return 0;
@@ -247,7 +250,7 @@ boolean Check_Led2() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   uint ledState = Wire.read();  
-  if (ledState && 0x02) { //00000010 dus 2
+  if (ledState & 0x20) { //Check output D05
     return 1;
   } else {
     return 0;
@@ -261,8 +264,9 @@ boolean Check_Pushbutton1() {
   Wire.requestFrom(0x38, 1);   
   unsigned int buttonState = Wire.read();
   if (buttonState  & 0x01) {
-    return true;
-  } else { return false; }
+    return 1;
+  } else { 
+    return 0; }
 }
 
 boolean Check_Pushbutton2() {
@@ -272,8 +276,9 @@ boolean Check_Pushbutton2() {
   Wire.requestFrom(0x38, 1);   
   unsigned int buttonState = Wire.read();
   if ((buttonState >> 1)  & 0x01) {
-    return true;
-  } else { return false; }
+    return 1;
+  } else { 
+    return 0; }
 }
 
 //------------------Fridge------------------
@@ -307,8 +312,9 @@ boolean Check_FridgeDoor() {
   Wire.requestFrom(0x38, 1);   
   unsigned int buttonState = Wire.read();
   if ((buttonState)  & 0x01) {
-    return true;
-  } else { return false; }
+    return 1;
+  } else { 
+    return 0; }
 }
 
 int checkTemperature1() {
@@ -355,8 +361,9 @@ boolean PIR_sensor() {
   Wire.requestFrom(0x38, 1);   
   unsigned int buttonState = Wire.read();
   if (buttonState  & 0x01) {
-    return true;
-  } else { return false; }
+    return 1;
+  } else { 
+    return 0; }
 }
 
 //------------------Wall------------------
@@ -396,5 +403,3 @@ int Check_potentiometer() {
   
   return anin1;
 }
-
-
