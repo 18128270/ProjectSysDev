@@ -39,17 +39,19 @@ void loop(void) {
   Wire.write(byte(outputs<<4));            
   Wire.endTransmission(); 
   Serial.print("Digital out: ");
-  Serial.println(outputs&0x0F);   
-  outputs++;
+  Serial.println(outputs&0x0F);  
+  outputs++;                      
+                                  
+                                  
   
-  //Read PCA9554 outputs (IO0-IO3)
+  //Read PCA9554 inputs (IO0-IO3)
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);   
   unsigned int inputs = Wire.read();  
   Serial.print("Digital in: ");
-  Serial.println(inputs&0x0F); //output ----1111 of 16 dus niet 0/1 
+  Serial.println(inputs&0x0F); //input and 00001111 only shows first 4 bits
 
   //Config MAX11647
   //Inside loop for debugging purpose (hot plugging wemos module into i/o board). 
