@@ -49,6 +49,7 @@ int main(){
 while(1){
     char buffer[1024] = {0};
     cout<<("<<<< clearing buffer >>>>\n");
+    cout <<("\n");
     addrlen = sizeof(struct sockaddr_in);
     cout<<("Waiting for incoming messages\n");
     if ((new_socket = accept(server_fd,(struct sockaddr *)&address,&addrlen))<0){
@@ -62,7 +63,7 @@ while(1){
     
     
     if(!strcmp(buffer,buffer)){ //om DestAdd aan te geven.
-        cout <<("<<<<<<<<<<<<<<<<<< Sending message to WEMOS >>>>>>>>>>>>>>>>>>\n");
+        cout <<("<<< Sending message to WEMOS >>>\n");
     
         int WemosSock = 0, valread; 
         struct sockaddr_in serv_addr;  
@@ -94,7 +95,6 @@ while(1){
         valread = read(WemosSock, buffer2, 1024); 
         printf("%s\n", buffer2);
         cout <<("<<< Wemos close connection\n");
-        cout<<(" \n");
         close(WemosSock);
         cout <<("\n");
     }
