@@ -64,7 +64,7 @@ void loop(void) {
   Wire.requestFrom(0x36, 4);   
   unsigned int anin0 = Wire.read()&0x03;  
   anin0=anin0<<8;
-  anin0 = anin0|Wire.read();  
+  anin0 = anin0|Wire.read();
   unsigned int anin1 = Wire.read()&0x03;  
   anin1=anin1<<8;
   anin1 = anin1|Wire.read(); 
@@ -78,4 +78,3 @@ void loop(void) {
 
   //delay(900); 
 }
-
