@@ -1,13 +1,14 @@
 #include <ESP8266WiFi.h>
 #include <stdlib.h>
+#define PORT 8181
 
 
 // Replace with your network credentials
 const char* ssid     = "SSID";
-const char* password = "password";
+const char* password = "PASSWORD";
 
 // Set web server port number to 8181
-WiFiServer socketServer(8181);
+WiFiServer socketServer(PORT);
 
 const int output5 = D5;
 
@@ -32,7 +33,10 @@ void setup() {
   Serial.println(" =========");
   socketServer.begin();
   Serial.println("");
-  Serial.println("========= Socket Server is up on port 8181 =========");
+  Serial.print("========= Socket Server is up on port ");
+  Serial.print(PORT);
+  Serial.print(" =========");
+  Serial.println("");
 }
 
 void loop() {
@@ -65,11 +69,14 @@ void loop() {
           if(c == '0') {
           digitalWrite(output5, LOW);
           }
+          client.stop();
         }
-        //client.stop();
-        Serial.println("");
-        Serial.println("Client disconnected");
+        
+        
       }
+      Serial.println(" ");
+      Serial.println("Client disconnected");
+      //client.stop();
       }
     }
   }
