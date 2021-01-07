@@ -4,7 +4,7 @@ if (isset($_GET["submit"])) {
 
 	$message = $_GET["query"];
 	$host = "192.168.178.57";
-	$port = 8080;
+	$port = 8181;
 	error_reporting(E_ALL);
 
 	// create socket
