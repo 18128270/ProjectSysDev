@@ -94,6 +94,7 @@ while(1){
         valread = read(WemosSock, buffer2, 1024); 
         printf("%s\n", buffer2);
         cout <<("<<< Wemos close connection\n");
+        cout<<(" \n");
         close(WemosSock);
         cout <<("\n");
     }
