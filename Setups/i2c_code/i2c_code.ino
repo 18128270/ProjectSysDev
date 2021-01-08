@@ -59,7 +59,7 @@ boolean Check_Led1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x10) {
+  if(Wire.read() & 0x10) {
     return 1;
   } else {
     return 0;
@@ -72,7 +72,7 @@ boolean Check_pushbutton1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x01) {
+  if(Wire.read() & 0x01) {
     return 1;
   } else { 
     return 0; 
@@ -125,7 +125,7 @@ boolean Check_Led1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x10) { //Check output DO4
+  if(Wire.read() & 0x10) {
     return 1;
   } else {
     return 0;
@@ -138,7 +138,7 @@ boolean Check_Motor(){
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x11) { //Check output DO5
+  if(Wire.read() & 0x11) { //Check output DO5
     return 1;
   } else {
     return 0;
@@ -151,7 +151,7 @@ boolean Check_Pushbutton1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x01) {
+  if(Wire.read() & 0x01) {
     return 1;
   } else { 
     return 0; 
@@ -204,7 +204,7 @@ boolean Check_Led1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x11) { //Check output D05
+  if(Wire.read() & 0x11) { //Check output D05
      return 1;
   } else {
      return 0;
@@ -217,7 +217,7 @@ boolean Check_pushbutton1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x01) {
+  if(Wire.read() & 0x01) {
      return 1;
   } else {
      return 0; 
@@ -282,7 +282,7 @@ boolean Check_Led1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x10) {
+  if(Wire.read() & 0x10) {
     return 1;
   } else {
     return 0;
@@ -295,7 +295,7 @@ boolean Check_Led2() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x11) {
+  if(Wire.read() & 0x11) {
     return 1;
   } else {
     return 0;
@@ -308,7 +308,7 @@ boolean Check_Pushbutton1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x01) {
+  if(Wire.read() & 0x01) {
     return 1;
   } else { 
     return 0; 
@@ -321,7 +321,7 @@ boolean Check_Pushbutton2() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x02) {
+  if(Wire.read() & 0x02) {
     return 1;
   } else { 
     return 0; 
@@ -335,7 +335,7 @@ boolean Check_FridgeDoor() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x01) {
+  if(Wire.read() & 0x01) {
     return 1;
   } else { 
     return 0; 
@@ -370,7 +370,7 @@ boolean Check_Sensor() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if (Wire.read() & 0x01) {
+  if(Wire.read() & 0x01) {
     return 1;
   } else { 
     return 0; 
