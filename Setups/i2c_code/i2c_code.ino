@@ -5,7 +5,7 @@
 #define I2C_SDL D1
 #define I2C_SDA D2
 
-//Servo init
+//servo init
 Servo doorServo;
 //#define doorOpen position_door_open
 //#define doorClose position_door_close
@@ -14,7 +14,7 @@ void setup() {
   Wire.begin();
   pinMode(D5, OUTPUT);
   
-  //init servo
+  //set servo port to D5
   doorServo.attach(D5);
 }
 
@@ -58,8 +58,8 @@ boolean Check_Led1() {
   Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  unsigned int ledState = Wire.read();  
-  if (ledState & 0x10) { //Check output D04
+  
+  if (Wire.read() & 0x10) {
     return 1;
   } else {
     return 0;
@@ -70,9 +70,9 @@ boolean Check_pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);    
-  unsigned int buttonState = Wire.read();
-  if (buttonState & 0x01) {
+  Wire.requestFrom(0x38, 1);
+  
+  if (Wire.read() & 0x01) {
     return 1;
   } else { 
     return 0; 
@@ -80,7 +80,6 @@ boolean Check_pushbutton1() {
 }
 
 boolean Check_Force() {
-  //analog input AL0
   Wire.requestFrom(0x36, 2);
   unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
 
@@ -125,8 +124,8 @@ boolean Check_Led1() {
   Wire.write(byte(0x01));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  unsigned int ledState = Wire.read();  
-  if (ledState & 0x10) { //Check output DO4
+  
+  if (Wire.read() & 0x10) { //Check output DO4
     return 1;
   } else {
     return 0;
@@ -138,8 +137,8 @@ boolean Check_Motor(){
   Wire.write(byte(0x01));
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  unsigned int motorState = Wire.read();  
-  if (motorState & 0x11) { //Check output DO5
+  
+  if (Wire.read() & 0x11) { //Check output DO5
     return 1;
   } else {
     return 0;
@@ -150,9 +149,9 @@ boolean Check_Pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);   
-  unsigned int buttonState = Wire.read();
-  if (buttonState & 0x01) {
+  Wire.requestFrom(0x38, 1);
+  
+  if (Wire.read() & 0x01) {
     return 1;
   } else { 
     return 0; 
@@ -204,8 +203,8 @@ boolean Check_Led1() {
   Wire.write(byte(0x01));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  unsigned int ledState = Wire.read();  
-  if (ledState & 0x11) { //Check output D05
+  
+  if (Wire.read() & 0x11) { //Check output D05
      return 1;
   } else {
      return 0;
@@ -216,9 +215,9 @@ boolean Check_pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);   
-  unsigned int buttonState = Wire.read();
-  if (buttonState & 0x01) {
+  Wire.requestFrom(0x38, 1);
+  
+  if (Wire.read() & 0x01) {
      return 1;
   } else {
      return 0; 
@@ -282,8 +281,8 @@ boolean Check_Led1() {
   Wire.write(byte(0x01));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  unsigned int ledState = Wire.read();  
-  if (ledState & 0x10) { //Check output D04
+  
+  if (Wire.read() & 0x10) {
     return 1;
   } else {
     return 0;
@@ -295,8 +294,8 @@ boolean Check_Led2() {
   Wire.write(byte(0x01));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  unsigned int ledState = Wire.read();  
-  if (ledState & 0x11) { //Check output D05
+  
+  if (Wire.read() & 0x11) {
     return 1;
   } else {
     return 0;
@@ -307,9 +306,9 @@ boolean Check_Pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);   
-  unsigned int buttonState = Wire.read();
-  if (buttonState  & 0x01) {
+  Wire.requestFrom(0x38, 1);
+  
+  if (Wire.read() & 0x01) {
     return 1;
   } else { 
     return 0; 
@@ -320,9 +319,9 @@ boolean Check_Pushbutton2() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);   
-  unsigned int buttonState = Wire.read();
-  if (buttonState  & 0x02) {
+  Wire.requestFrom(0x38, 1);
+  
+  if (Wire.read() & 0x02) {
     return 1;
   } else { 
     return 0; 
@@ -334,9 +333,9 @@ boolean Check_FridgeDoor() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);   
-  unsigned int buttonState = Wire.read();
-  if ((buttonState)  & 0x01) {
+  Wire.requestFrom(0x38, 1);
+  
+  if (Wire.read() & 0x01) {
     return 1;
   } else { 
     return 0; 
@@ -369,9 +368,9 @@ boolean Check_Sensor() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);   
-  unsigned int sensorState = Wire.read();
-  if (sensorState & 0x01) {
+  Wire.requestFrom(0x38, 1);
+  
+  if (Wire.read() & 0x01) {
     return 1;
   } else { 
     return 0; 
