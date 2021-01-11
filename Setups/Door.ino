@@ -3,82 +3,36 @@
 #include <Wire.h>
 #include <Servo.h> 
 
-#define I2C_SDL    D1
-#define I2C_SDA    D2
+//wire.h definitions
+#define I2C_SDL D1
+#define I2C_SDA D2
 
-//Door
+//servo init
 Servo doorServo;
-#define doorOpen position_door_open
-#define doorClose position_door_close
 
 // Replace with your network credentials
 const char* ssid     = "SSID";
 const char* password = "WPA-2PSK";
 
+//define port for network
+#define PORT 8080
+
 // Set web server port number to 8080
-WiFiServer socketServer(8080);
+WiFiServer socketServer(PORT);
 
 void setup() {
-  // Start Serial printer
-  Serial.begin(115200);
-  
-  // Start Wire.h
   Wire.begin();
+  config_WifiConnect();
   
-  // init servo (Door)
+  //set pin D5 as output  
+  pinMode(D5, OUTPUT);
+
+  //set servo port to D5
   doorServo.attach(D5);
- 
-  // Connect to Wi-Fi network with SSID and password
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.print("Connecting...");
-  }
-  // Print local IP address and start Socket Server
-  Serial.println("");
-  Serial.print("========= WiFi connected. IP:");
-  Serial.print(WiFi.localIP());
-  Serial.println(" =========");
-  socketServer.begin();
-  Serial.println("");
-  Serial.println("========= Socket Server is up on port 8080 =========");
 }
 
-void loop(){
-  // Listen for incoming clients
-  WiFiClient client = socketServer.available();   
-  
-  // If a new client connects,
-  if (client) { 
-    Serial.println("New Client is connected"); 
-	
-    // make a String (buffer) to hold incoming data from the client
-	String buffer = "";                		
-    if (client) {
- 
-    while (client.connected()) {
- 
-		while (client.available()>0) {
-		//Stores buffer in string c  
-        char c = client.read();
-		//prints c to monitor
-        Serial.write(c);
-		//writes Acknowledged back to client.
-        client.write("Acknowledged");
-		}
-	
-		delay(10); 
-    }
-    Serial.println("");
-	
-    //Socket Server closes socket, maybe change this so the client closes the connection.
-	client.stop();
-    Serial.println("Client disconnected");
- 
-    }
-  }
+void loop() {
+
 }
 
 void config_PCA9554() {
@@ -95,6 +49,30 @@ void config_MAX11647() {
   Wire.write(byte(0xA2));          
   Wire.write(byte(0x03));
   Wire.endTransmission(); 
+}
+
+void config_WifiConnect(){
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  WiFi.mode(WIFI_STA); 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print("Connecting...");
+  }
+  Serial.println("");
+  Serial.print("========= WiFi connected. IP:");
+  Serial.print(WiFi.localIP());
+  Serial.println(" =========");
+}
+
+void config_SocketServer(){
+  Serial.println("");
+  Serial.print("========= Socket Server is up on port ");
+  Serial.print(PORT);
+  Serial.print(" =========");
+  Serial.println(""); 
+  socketServer.begin();
 }
 
 void LED1_on() {
@@ -126,19 +104,24 @@ void LED2_off() {
 }
 
 void Door_open() {
-  doorServo.write(doorOpen);
+  doorServo.write(90);
 }
 
 void Door_close() {
-  doorServo.write(doorClose);
+  doorServo.write(0);
+}
+
+boolean Check_Door() {
+  return (doorServo.read() == 0);
 }
 
 boolean Check_Led1() {
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x01));      
+  Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  while (Wire.available()){
-  uint ledState = Wire.read();  
-  }
-  if (ledState & 0x01) || (ledState & 0x03) {
+  
+  if(Wire.read() & 0x10) {
     return 1;
   } else {
     return 0;
@@ -146,38 +129,40 @@ boolean Check_Led1() {
 }
 
 boolean Check_Led2() {
+  Wire.beginTransmission(0x38); 
+  Wire.write(byte(0x01));      
+  Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  while (Wire.available()){
-  uint ledState = Wire.read();  
-  }
-  if (ledState & 0x02) || (ledState & 0x03) {
+  
+  if(Wire.read() & 0x11) {
     return 1;
   } else {
     return 0;
   }
 }
 
-boolean Check_Door() {
-}
-
-boolean Check_pushbutton1() {
+boolean Check_Pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);   
-  unsigned int buttonState = Wire.read();
-  if (buttonState  & 0x01) {
-    return true;
-  } else { return false; }
+  Wire.requestFrom(0x38, 1);
+  
+  if(Wire.read() & 0x01) {
+    return 1;
+  } else { 
+    return 0; 
+  }
 }
 
-boolean Check_pushbutton2() {
+boolean Check_Pushbutton2() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);   
-  unsigned int buttonState = Wire.read();
-  if ((buttonState >> 1)  & 0x01) {
-    return true;
-  } else { return false; }
+  Wire.requestFrom(0x38, 1);
+  
+  if(Wire.read() & 0x02) {
+    return 1;
+  } else { 
+    return 0; 
+  }
 }

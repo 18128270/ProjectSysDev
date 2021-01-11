@@ -1,77 +1,28 @@
 #include <ESP8266WiFi.h>
 #include <stdlib.h>
 #include <Wire.h>
-#include <Servo.h> 
 
-#define I2C_SDL    D1
-#define I2C_SDA    D2
-
+//wire.h definitions
+#define I2C_SDL D1
+#define I2C_SDA D2
 
 // Replace with your network credentials
 const char* ssid     = "SSID";
 const char* password = "WPA-2PSK";
 
+//define port for network
+#define PORT 8080
+
 // Set web server port number to 8080
-WiFiServer socketServer(8080);
+WiFiServer socketServer(PORT);
 
 void setup() {
-  // Start Serial printer
-  Serial.begin(115200);
-  
-  // Start Wire.h
   Wire.begin();
- 
-  // Connect to Wi-Fi network with SSID and password
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.print("Connecting...");
-  }
-  // Print local IP address and start Socket Server
-  Serial.println("");
-  Serial.print("========= WiFi connected. IP:");
-  Serial.print(WiFi.localIP());
-  Serial.println(" =========");
-  socketServer.begin();
-  Serial.println("");
-  Serial.println("========= Socket Server is up on port 8080 =========");
+  config_WifiConnect();
 }
 
-void loop(){
-  // Listen for incoming clients
-  WiFiClient client = socketServer.available();   
-  
-  // If a new client connects,
-  if (client) { 
-    Serial.println("New Client is connected"); 
-	
-    // make a String (buffer) to hold incoming data from the client
-	String buffer = "";                		
-    if (client) {
- 
-    while (client.connected()) {
- 
-		while (client.available()>0) {
-		//Stores buffer in string c  
-        char c = client.read();
-		//prints c to monitor
-        Serial.write(c);
-		//writes Acknowledged back to client.
-        client.write("Acknowledged");
-		}
-	
-		delay(10); 
-    }
-    Serial.println("");
-	
-    //Socket Server closes socket, maybe change this so the client closes the connection.
-	client.stop();
-    Serial.println("Client disconnected");
- 
-    }
-  }
+void loop() {
+
 }
 
 void config_PCA9554() {
@@ -88,6 +39,30 @@ void config_MAX11647() {
   Wire.write(byte(0xA2));          
   Wire.write(byte(0x03));
   Wire.endTransmission(); 
+}
+
+void config_WifiConnect(){
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  WiFi.mode(WIFI_STA); 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print("Connecting...");
+  }
+  Serial.println("");
+  Serial.print("========= WiFi connected. IP:");
+  Serial.print(WiFi.localIP());
+  Serial.println(" =========");
+}
+
+void config_SocketServer(){
+  Serial.println("");
+  Serial.print("========= Socket Server is up on port ");
+  Serial.print(PORT);
+  Serial.print(" =========");
+  Serial.println(""); 
+  socketServer.begin();
 }
 
 void LED1_on() {
@@ -109,22 +84,34 @@ boolean Check_Led1() {
   Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  uint ledState = Wire.read();  
-  if (ledState & 0x01) { //00000001 dus 1
+  
+  if(Wire.read() & 0x10) {
     return 1;
   } else {
     return 0;
   }
 }
 
-boolean Check_Pushbutton1() {
+boolean Check_pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);   
-  uint buttonState = Wire.read();
-  if (buttonState  & 0x01) {
-    return true;
-  } else { return false; }
+  Wire.requestFrom(0x38, 1);
+  
+  if(Wire.read() & 0x01) {
+    return 1;
+  } else { 
+    return 0; 
+  }
 }
 
+boolean Check_Force() {
+  Wire.requestFrom(0x36, 2);
+  unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
+
+  if(anin0 >= 1000) {
+    return 1;
+  } else {
+    return 0;
+  }
+}

@@ -1,3 +1,5 @@
+#include <ESP8266WiFi.h>
+#include <stdlib.h>
 #include <Wire.h>
 #include <Servo.h> 
 
@@ -7,13 +9,20 @@
 
 //servo init
 Servo doorServo;
-//#define doorOpen position_door_open
-//#define doorClose position_door_close
+
+WiFiServer socketServer(PORT);
+
+const char* ssid     = "SSID";
+const char* password = "PASSWORD";
 
 void setup() {
   Wire.begin();
+  config_WifiConnect();
+  config_SocketServer();
+
+  //set pin D5 as output  
   pinMode(D5, OUTPUT);
-  
+
   //set servo port to D5
   doorServo.attach(D5);
 }
@@ -21,8 +30,6 @@ void setup() {
 void loop() {
 
 }
-
-void 
 
 void config_PCA9554() {
   //PCA9554 configurations
@@ -40,9 +47,6 @@ void config_MAX11647() {
   Wire.endTransmission(); 
 }
 
-const char* ssid     = "SSID";
-const char* password = "PASSWORD";
-
 void config_WifiConnect(){
   Serial.print("Connecting to ");
   Serial.println(ssid);
@@ -57,8 +61,6 @@ void config_WifiConnect(){
   Serial.print(WiFi.localIP());
   Serial.println(" =========");
 }
-
- WiFiServer socketServer(PORT);
 
 void config_SocketServer(){
   Serial.println("");
