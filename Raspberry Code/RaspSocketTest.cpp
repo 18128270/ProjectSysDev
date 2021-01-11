@@ -76,7 +76,7 @@ while(1){
     if(!strcmp(incBuffer,incBuffer)){
 
         // initialize new outgoing Socket to WEMOS 
-        int WemosSock = 0, bytesIn; 
+        int WemosSock = 0, bytesOut; 
         struct sockaddr_in wemos_addr;  
         char outBuffer[1024] = {0}; 
         if ((WemosSock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
@@ -91,7 +91,7 @@ while(1){
         if(inet_pton(AF_INET, DestAdd, &wemos_addr.sin_addr) <= 0)  
         { 
             cerr << "<<< WEMOS Invalid address/ Address not supported"; 
-            closesocket(WemosSock);
+            close(WemosSock);
             exit(EXIT_FAILURE); 
         }
 
@@ -99,19 +99,19 @@ while(1){
         if (connect(WemosSock, (struct sockaddr *)&wemos_addr, sizeof(wemos_addr)) < 0) 
         { 
             cerr << "<<< WEMOS Connection Failed";
-            closesocket(WemosSock); 
+            close(WemosSock); 
             exit(EXIT_FAILURE);
         } 
 
         // Send something to WEMOS
         send(WemosSock, outBuffer, sizeof(outBuffer), 0); 
         cout << "Server: Sending message to WEMOS" << endl;
-        bytesIn = read(WemosSock, outBuffer, 1024); 
+        bytesOut = read(WemosSock, outBuffer, 1024); 
         cout << "here is the buffer: " << outBuffer << endl;
         cout <<"<<< Wemos close connection" << endl;
         
         //Clean close outgoing socket but keep incoming open
-        closesocket(WemosSock);
+        close(WemosSock);
     }
 }
 }
