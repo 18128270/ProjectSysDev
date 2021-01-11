@@ -22,7 +22,53 @@ void setup() {
 }
 
 void loop() {
+  // Listen for incoming clients
+  WiFiClient client = socketServer.available();
 
+  // If a new client connects,
+  if (client) {
+    Serial.println("New Client is connected");
+
+    if (client) {
+
+     while (client.connected()) {
+
+        while (client.available() > 0) {
+          //Stores buffer in string c
+          char c = client.read();
+          
+          //prints c to monitor
+          Serial.write(c);
+          //writes Acknowledged back to client.
+          client.write(">>> Acknowledged");
+          
+          if(c == '0'){
+            LED1_on();
+          }
+          
+          if(c == '1'){
+            LED1_off();
+          }
+          
+          if(c == '2'){
+            Check_Led1();
+          }
+
+          if(c == '3'){
+            Check_Pushbutton1();
+          }
+          
+          if(c == '4'){
+            Check_Force();
+          }
+          client.stop();
+        }
+      }
+    Serial.println(" ");
+    Serial.println("Client disconnected");
+    //client.stop();
+    }
+  }
 }
 
 void config_PCA9554() {
@@ -92,7 +138,7 @@ boolean Check_Led1() {
   }
 }
 
-boolean Check_pushbutton1() {
+boolean Check_Pushbutton1() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();

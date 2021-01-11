@@ -26,7 +26,45 @@ void setup() {
 }
 
 void loop() {
+  // Listen for incoming clients
+  WiFiClient client = socketServer.available();
 
+  // If a new client connects,
+  if (client) {
+    Serial.println("New Client is connected");
+
+    if (client) {
+
+     while (client.connected()) {
+
+        while (client.available() > 0) {
+          //Stores buffer in string c
+          char c = client.read();
+          
+          //prints c to monitor
+          Serial.write(c);
+          //writes Acknowledged back to client.
+          client.write(">>> Acknowledged");
+          
+          if(c == '0'){
+            LED1_on();
+          }
+          
+          if(c == '1'){
+            LED1_off();
+          }
+          
+          if(c == '2'){
+            Check_Sensor();
+          }
+          client.stop();
+        }
+      }
+    Serial.println(" ");
+    Serial.println("Client disconnected");
+    //client.stop();
+    }
+  }
 }
 
 void config_PCA9554() {

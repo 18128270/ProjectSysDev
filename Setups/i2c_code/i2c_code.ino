@@ -10,6 +10,8 @@
 //servo init
 Servo doorServo;
 
+#define PORT 8080
+
 WiFiServer socketServer(PORT);
 
 const char* ssid     = "SSID";
@@ -30,6 +32,8 @@ void setup() {
 void loop() {
 
 }
+
+void checkCommand(char 
 
 void config_PCA9554() {
   //PCA9554 configurations

@@ -26,7 +26,57 @@ void setup() {
 }
 
 void loop() {
+  // Listen for incoming clients
+  WiFiClient client = socketServer.available();
 
+  // If a new client connects,
+  if (client) {
+    Serial.println("New Client is connected");
+
+    if (client) {
+
+     while (client.connected()) {
+
+        while (client.available() > 0) {
+          //Stores buffer in string c
+          char c = client.read();
+          
+          //prints c to monitor
+          Serial.write(c);
+          //writes Acknowledged back to client.
+          client.write(">>> Acknowledged");
+          
+          if(c == '0'){
+            LCD_panel_on();
+          }
+
+          if(c == '1'){
+            LCD_panel_off();
+          }
+          
+          if(c == '2'){
+            LED1_on();
+          }
+          
+          if(c == '3'){
+            LED1_off();
+          }
+
+          if(c == '4'){
+            Check_LDR();
+          }
+
+          if(c == '5'){
+            Check_Potentiometer();
+          }
+          client.stop();
+        }
+      }
+    Serial.println(" ");
+    Serial.println("Client disconnected");
+    //client.stop();
+    }
+  }
 }
 
 void config_PCA9554() {
@@ -97,7 +147,7 @@ unsigned int Check_LDR() {
   return anin0;
 }
 
-unsigned int Check_potentiometer() {
+unsigned int Check_Potentiometer() {
   Wire.requestFrom(0x36, 4);
   unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read(); 
   unsigned int anin1 = ((Wire.read()&0x03) << 8) | Wire.read();
