@@ -62,7 +62,7 @@ void loop() {
           //writes Acknowledged back to client.
           client.write(">>> Acknowledged");
           
-          if(c == '1'){
+          if(c == '0'){
           digitalWrite(output5, HIGH);
           }
           
@@ -71,8 +71,6 @@ void loop() {
           }
           client.stop();
         }
-        
-        
       }
       Serial.println(" ");
       Serial.println("Client disconnected");

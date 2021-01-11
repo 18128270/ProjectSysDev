@@ -22,6 +22,8 @@ void loop() {
 
 }
 
+void 
+
 void config_PCA9554() {
   //PCA9554 configurations
   Wire.beginTransmission(0x38);
@@ -38,6 +40,35 @@ void config_MAX11647() {
   Wire.endTransmission(); 
 }
 
+const char* ssid     = "SSID";
+const char* password = "PASSWORD";
+
+void config_WifiConnect(){
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  WiFi.mode(WIFI_STA); 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print("Connecting...");
+  }
+  Serial.println("");
+  Serial.print("========= WiFi connected. IP:");
+  Serial.print(WiFi.localIP());
+  Serial.println(" =========");
+}
+
+ WiFiServer socketServer(PORT);
+
+void config_SocketServer(){
+  Serial.println("");
+  Serial.print("========= Socket Server is up on port ");
+  Serial.print(PORT);
+  Serial.print(" =========");
+  Serial.println(""); 
+  socketServer.begin();
+}
+ 
 //------------------Bed------------------
 void LED1_on() {
   Wire.beginTransmission(0x38); 
