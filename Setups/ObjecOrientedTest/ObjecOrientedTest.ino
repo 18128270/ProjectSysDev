@@ -1,6 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <stdlib.h>
-#define PORT 8181
+#define PORT 8080
 
 
 // Replace with your network credentials
@@ -12,31 +12,38 @@ WiFiServer socketServer(PORT);
 
 const int output5 = D5;
 
+void config_WifiConnect(){
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  WiFi.mode(WIFI_STA); 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print("Connecting...");
+  }
+  Serial.println("");
+  Serial.print("========= WiFi connected. IP:");
+  Serial.print(WiFi.localIP());
+  Serial.println(" =========");
+}
+
+void config_SocketServer(){
+  Serial.println("");
+  Serial.print("========= Socket Server is up on port ");
+  Serial.print(PORT);
+  Serial.print(" =========");
+  Serial.println(""); 
+  socketServer.begin();
+}
+
 void setup() {
   Serial.begin(115200);
 
   pinMode(output5, OUTPUT);
   digitalWrite(output5, LOW);
 
-  // Connect to Wi-Fi network with SSID and password
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.print("Connecting...");
-  }
-  // Print local IP address and start Socket Server
-  Serial.println("");
-  Serial.print("========= WiFi connected. IP:");
-  Serial.print(WiFi.localIP());
-  Serial.println(" =========");
-  socketServer.begin();
-  Serial.println("");
-  Serial.print("========= Socket Server is up on port ");
-  Serial.print(PORT);
-  Serial.print(" =========");
-  Serial.println("");
+  config_WifiConnect();
+  config_SocketServer();
 }
 
 void loop() {
@@ -65,7 +72,7 @@ void loop() {
           digitalWrite(output5, HIGH);
           }
           
-          if(c == '0') {
+          if(c == '1') {
           digitalWrite(output5, LOW);
           }
           client.stop();
@@ -77,3 +84,5 @@ void loop() {
       }
     }
   }
+
+  
