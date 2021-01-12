@@ -2,7 +2,6 @@
 #include "WemosTunnel.h"
 
 
-
 int TCPListener::init() 
 {
     // initialize Server Socket(listener)
@@ -37,73 +36,88 @@ int TCPListener::init()
 
 int TCPListener::run() 
 {
-// Accept incoming (from PHP socket)
-        addrlen = sizeof(struct sockaddr_in);
-        cout << "Waiting for incoming messages" << endl;
+    // Accept incoming (from PHP socket)
+    addrlen = sizeof(struct sockaddr_in);
+    cout << "Waiting for incoming messages" << endl;
+    if ((phpsocket = accept(m_socket, (struct sockaddr*)&address, &addrlen)) < 0) 
+    {
+        cerr << "Accepting failed";
+        exit(EXIT_FAILURE);
+    }
 
-        if ((phpsocket = accept(m_socket, (struct sockaddr*)&address, &addrlen)) < 0) 
-        {
-            cerr << "Accepting failed";
-            exit(EXIT_FAILURE);
-        }
+    // Read the incoming msg, store in incBuffer
+    if (bytesBuff = read(phpsocket, incBuffer, sizeof(incBuffer)) <= 0) 
+    {
 
-        // Read the incoming msg, store in incBuffer
-        memset(incBuffer, 0, sizeof(incBuffer)); //clear buffer to be sure
-        if (bytesBuff = read(phpsocket, incBuffer, sizeof(incBuffer)) <= 0) 
-        {
-            cout << "TCPListener::run :: test" << endl;
-        }
+    }
+    // cool int to string convert to be able to use send().
+    val = CheckIncCommands();
+    tmp = sprintf(outBuffer,"%d",val);
+    send(phpsocket, outBuffer, sizeof(outBuffer), 0);
+    // after the outBuffer is sent back to PHP close the socket for the next command.
+    close(phpsocket);
+    // clear buffers so no old commands gets used.
+    memset(outBuffer, 0, sizeof(outBuffer));
+    memset(incBuffer, 0, sizeof(incBuffer)); 
 
-        cout << "Here is the message: " << incBuffer << endl;
-        send(phpsocket, incBuffer, sizeof(incBuffer), 0);
-        close(phpsocket);
-        return 0;
+    return 0;
 }
 
-void TCPListener::CheckIncCommands()
+int TCPListener::CheckIncCommands()
 {
+    // define classes with port number, ipadd, name. (name is only used for Str.find and cout)
     WemosTunnel Bed(8080,"192.168.178.57","Bed");
     WemosTunnel Chair(8080,"192.168.178.31","Chair");
     WemosTunnel Column(8080,"192.168.178.32","Column");
     WemosTunnel Door(8080,"192.168.178.33","Door");
     WemosTunnel Fridge(8080,"192.168.178.34","Fridge");
-    WemosTunnel TabelLamp(8080,"192.168.178.35","TabelLamp");
+    WemosTunnel Tablelamp(8080,"192.168.178.35","TableLamp");
     WemosTunnel Wall(8080,"192.168.178.36","Wall");
 
+
+
     // First check for destination 
-    if (!strcmp(incBuffer, "bed on")) 
-    {   
-    Bed.sendCommand("0");
+    // incBuffer[]convert to String for use in str.find
+    string str(incBuffer);
+    // size_t init for the if's
+    size_t bed = str.find(Bed.name);
+    size_t chair = str.find(Chair.name);
+    size_t column = str.find(Column.name);
+    size_t door = str.find(Door.name);
+    size_t fridge = str.find(Fridge.name);
+    size_t tablelamp = str.find(Tablelamp.name);
+    size_t wall = str.find(Wall.name);
+
+    // check the incoming command for destination.
+    // if the command contains "bed" send command to right class.
+    if (bed!=string::npos)
+    {
+        return(Bed.sendCommand(incBuffer));
     }
-    if (!strcmp(incBuffer, "bed off")) 
-    {   
-    Bed.sendCommand("1");
+    if (chair!=string::npos)
+    {
+        return(Chair.sendCommand(incBuffer));
     }
-    memset(incBuffer, 0, sizeof(incBuffer)); //clear buffer to be sure
+    if (column!=string::npos)
+    {
+        return(Column.sendCommand(incBuffer));
+    }
+    if (door!=string::npos)
+    {
+        return(Door.sendCommand(incBuffer));
+    }
+    if (fridge!=string::npos)
+    {
+        return(Fridge.sendCommand(incBuffer));
+    }
+    if (tablelamp!=string::npos)
+    {
+        return(Tablelamp.sendCommand(incBuffer));
+    }
+    if (wall!=string::npos)
+    {
+        return(Wall.sendCommand(incBuffer));
+    }
+    // empty str
+    str = "";
 }
-   // if (!strcmp(incBuffer, "Chair"))
-   // {
-   //     send(phpsocket, incBuffer, sizeof(incBuffer), 0);
-//
-   // }scp leds nig2000@192.168.178.21:/home/nig2000/OOPR/
-   // if (!strcmp(incBuffer, "Column"))
-   // {
-   //     send(phpsocket, incBuffer, sizeof(incBuffer), 0);
-   // }
-   // if (!strcmp(incBuffer, "Door"))
-   // {
-   //     send(phpsocket, incBuffer, sizeof(incBuffer), 0);
-//
-   // }
-   // if (!strcmp(incBuffer, "Fridge"))
-   // {
-   //     send(phpsocket, incBuffer, sizeof(incBuffer), 0);
-   // }
-   // if (!strcmp(incBuffer, "TableLamp"))
-   // {
-   //     send(phpsocket, incBuffer, sizeof(incBuffer), 0);
-   // }
-   // if (!strcmp(incBuffer, "Wall"))
-   // {
-   //     send(phpsocket, incBuffer, sizeof(incBuffer), 0);
-   // }

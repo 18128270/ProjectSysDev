@@ -16,12 +16,20 @@ const char* password = "WPA-2PSK";
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);
 
+int i = 0;
+char buffer[100];
+
 void setup() {
   Wire.begin();
   config_WifiConnect();
 }
 
 void loop() {
+  
+  while (i<100){
+    buffer[i]= '\0';
+    i++;
+  }
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
 
@@ -36,45 +44,44 @@ void loop() {
         while (client.available() > 0) {
           //Stores buffer in string c
           char c = client.read();
-          
-          //prints c to monitor
-          Serial.write(c);
-          //writes Acknowledged back to client.
-          client.write(">>> Acknowledged");
-          
-          if(c == '0'){
-            LED1_on();
+          if (i<100){
+            buffer[i] = c;  //Stores buffer in string c
+            i++;
+            buffer[i] = '\0';
           }
           
-          if(c == '1'){
-            LED1_off();
+          if(strstr(buffer,"led1 on")){
+            client.write(LED1_on());
           }
           
-          if(c == '2'){
-            Buzzer_on();
+          if(strstr(buffer,"led1 off")){
+            client.write(LED1_off());
           }
           
-          if(c == '3'){
-            Buzzer_off();
+          if(strstr(buffer,"buzzer on")){
+            client.write(Buzzer_on());
+          }
+          
+          if(strstr(buffer,"buzzer off")){
+            client.write(Buzzer_off());
           }
 
-          if(c == '4'){
-            Check_Led1();
+          if(strstr(buffer,"check led1")){
+            client.write(Check_Led1());
           }
           
-          if(c == '5'){
-            Check_Pushbutton1();
+          if(strstr(buffer,"check pushbutton1")){
+            client.write(Check_Pushbutton1());
           }
           
-          if(c == '6'){
-            Check_CO2();
+          if(strstr(buffer,"check co2")){
+            client.write(Check_CO2());
           }
-          client.stop();
         }
       }
     Serial.println(" ");
     Serial.println("Client disconnected");
-    //client.stop();
+    i = 0;
     }
   }
 }

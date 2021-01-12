@@ -1,20 +1,5 @@
 #include "WemosTunnel.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
 
-#include <unistd.h>
-#include <stdio.h>
-#include <sys/socket.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/wait.h>
-#include <string.h>
 
 using namespace std;
 
@@ -32,8 +17,10 @@ public:
 	// run the listener
 	int run();
 
-    // run the if checks for incoming commands
-    void CheckIncCommands();
+    // checks for incoming commands and do shit, returns output of the command to php
+    int CheckIncCommands();
+
+	
 
 protected:
 
@@ -47,5 +34,7 @@ private:
     
     int bytesBuff;                      // Amount of incoming bytes, testing purposes
     char incBuffer[1024];               // stores incoming buffer from Wemos
-
+	char outBuffer[100];
+	int tmp;
+	int val;							// return value of the checkfunction
 };

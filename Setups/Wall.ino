@@ -17,6 +17,9 @@ const char* password = "WPA-2PSK";
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);
 
+int i = 0;
+char buffer[100];
+
 void setup() {
   Wire.begin();
   config_WifiConnect();
@@ -26,6 +29,11 @@ void setup() {
 }
 
 void loop() {
+  
+  while (i<100){
+    buffer[i]= '\0';
+    i++;
+  }
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
 
@@ -40,41 +48,40 @@ void loop() {
         while (client.available() > 0) {
           //Stores buffer in string c
           char c = client.read();
-          
-          //prints c to monitor
-          Serial.write(c);
-          //writes Acknowledged back to client.
-          client.write(">>> Acknowledged");
-          
-          if(c == '0'){
-            LCD_panel_on();
+          if (i<100){
+            buffer[i] = c;  //Stores buffer in string c
+            i++;
+            buffer[i] = '\0';
           }
 
-          if(c == '1'){
-            LCD_panel_off();
-          }
-          
-          if(c == '2'){
-            LED1_on();
-          }
-          
-          if(c == '3'){
-            LED1_off();
+          if(strstr(buffer,"lcd on")){
+            client.write(LCD_panel_on());
           }
 
-          if(c == '4'){
-            Check_LDR();
+          if(strstr(buffer,"lcd off")){
+            client.write(LCD_panel_off());
+          }
+          
+          if(strstr(buffer,"led1 on")){
+            client.write(LED1_on());
+          }
+          
+          if(strstr(buffer,"led1 off")){
+            client.write(LED1_off());
           }
 
-          if(c == '5'){
-            Check_Potentiometer();
+          if(strstr(buffer,"check ldr")){
+            client.write(Check_LDR());
           }
-          client.stop();
+
+          if(strstr(buffer,"check potmeter")){
+            client.write(Check_Potentiometer());
+          }
         }
       }
     Serial.println(" ");
     Serial.println("Client disconnected");
-    //client.stop();
+    i = 0;
     }
   }
 }

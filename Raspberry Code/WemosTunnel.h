@@ -29,22 +29,26 @@ public:
 	int init();
 
 	// send the command to Wemos
-	int sendCommand(char command[5]);
+	int sendCommand(char command[1024]);
+
+    string name;                    // String name contains the name of the hardware it belongs to.
     
 protected:
 
-private:
-    string name;                    // String name contains the name of the hardware it belongs to.
-    int DestPort;                   // DestPort is the destination port of the socket server.
-    const char* DestAdd;            // DestAdd is the destination ipaddress of the socket server.
-
-    char command[5];                // Command is the char that is being sent to the WEMOS. Wemos knows what to do with this command. See conversion table for list of commands.
-
-    int c_socket;                   // in use for outgoing client socket.
-    struct sockaddr_in wemos_addr;  // File descriptor for binding port and IP to c_socket
-
     
-    int bytesBuffer;
-    char incBuffer[1024];
+
+private:
+    // string name;                    // String name contains the name of the hardware it belongs to.
+    int DestPort;                      // DestPort is the destination port of the socket server.
+    const char* DestAdd;               // DestAdd is the destination ipaddress of the socket server.
+    char command[1024];                // Command is the char that is being sent to the WEMOS. Wemos knows what to do with this command. See conversion table for list of commands.
+
+    int c_socket;                       // in use for outgoing client socket.
+    struct sockaddr_in wemos_addr;      // File descriptor for binding port and IP to c_socket
+
+    int bytesBuffer;                    // checker to see if the buffer is empty
+    int val;                            // tmp val for converts
+    char incBuffer[1024];               // char array for incBuffer from WEMOS
+    int sent;                           // checker to see if all bytes are sent to WEMOS
 
 };

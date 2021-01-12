@@ -17,12 +17,20 @@ const char* password = "WPA-2PSK";
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);
 
+int i = 0;
+char buffer[100];
+
 void setup() {
   Wire.begin();
   config_WifiConnect();
 }
 
 void loop() {
+  
+  while (i<100){
+    buffer[i]= '\0';
+    i++;
+  }
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
 
@@ -37,29 +45,28 @@ void loop() {
         while (client.available() > 0) {
           //Stores buffer in string c
           char c = client.read();
-          
-          //prints c to monitor
-          Serial.write(c);
-          //writes Acknowledged back to client.
-          client.write(">>> Acknowledged");
-          
-          if(c == '0'){
-            Check_FridgeDoor();
+          if (i<100){
+            buffer[i] = c;  //Stores buffer in string c
+            i++;
+            buffer[i] = '\0';
           }
           
-          if(c == '1'){
-            CheckTemp1();
+          if(strstr(buffer,"check fridgedoor")){
+            client.write(Check_FridgeDoor());
           }
           
-          if(c == '2'){
-            CheckTemp2();
+          if(strstr(buffer,"check temp1")){
+            client.write(CheckTemp1());
           }
-          client.stop();
+          
+          if(strstr(buffer,"check temp1")){
+            client.write(CheckTemp2());
+          }
         }
       }
     Serial.println(" ");
     Serial.println("Client disconnected");
-    //client.stop();
+    i = 0;
     }
   }
 }
