@@ -47,21 +47,21 @@ void loop() {
           client.write(">>> Acknowledged");
           
           if(c == '0'){
-            LCD_panel_on();
-          }
-
-          if(c == '1'){
-            LCD_panel_off();
-          }
-          
-          if(c == '2'){
             LED1_on();
           }
           
-          if(c == '3'){
+          if(c == '1'){
             LED1_off();
           }
+          
+          if(c == '2'){
+            LCD_panel_on();
+          }
 
+          if(c == '3'){
+            LCD_panel_off();
+          }
+          
           if(c == '4'){
             Check_LDR();
           }
