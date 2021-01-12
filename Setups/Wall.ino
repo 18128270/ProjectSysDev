@@ -48,6 +48,7 @@ void loop() {
         while (client.available() > 0) {
           //Stores buffer in string c
           char c = client.read();
+          
           if (i<100){
             buffer[i] = c;  //Stores buffer in string c
             i++;
