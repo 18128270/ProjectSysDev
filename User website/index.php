@@ -2,7 +2,7 @@
 /*header("Refresh: 60");*/
 
 if (isset($_GET["bed_led1_on"])) { echo "\n Reply From Server :".sendCMD("Bed led1 on"); }
-if (isset($_GET["bed_led1_on"])) { echo "\n Reply From Server :".sendCMD("Bed led1 off"); }
+if (isset($_GET["bed_led1_off"])) { echo "\n Reply From Server :".sendCMD("Bed led1 off"); }
 
 if (isset($_GET["chair_led1_on"])) { echo "\n Reply From Server :".sendCMD("Chair led1 on"); }
 if (isset($_GET["chair_led1_off"])) { echo "\n Reply From Server :".sendCMD("Chair led1 off"); }
