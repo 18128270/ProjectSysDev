@@ -20,19 +20,29 @@ WiFiServer socketServer(PORT);
 int i = 0;
 char buffer[100];
 
+int tijdNieuw;
+int tijdOud;
+int maxTijd = 30000;
+
+int fridgeDoorState;
+
 void setup() {
   Wire.begin();
   config_WifiConnect();
 }
 
 void loop() {
-  
   while (i<100){
     buffer[i]= '\0';
     i++;
   }
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
+
+  //check if fridge door is open, if so note time
+  if (Check_FridgeDoor() == 1 && tijdOud == tijdNieuw) {
+    tijdOud = millis();
+  }
 
   // If a new client connects,
   if (client) {
@@ -52,15 +62,27 @@ void loop() {
           }
           
           if(strstr(buffer,"check fridgedoor")){
-            client.write(Check_FridgeDoor());
+            //0 = DICHT, 1 = OPEN, 2 = TE LANG OPEN
+            fridgeDoorState = Check_FridgeDoor();
+            tijdNieuw = millis();
+            if (fridgeDoorState == 0) {
+              client.write(0);
+            } else {
+              if (tijdNieuw - tijdOud >= maxTijd) {
+                client.write(2);
+                tijdNieuw = tijdOud;
+              } else {
+                client.write(1);
+              }              
+            }
           }
           
           if(strstr(buffer,"check temp1")){
-            client.write(CheckTemp1());
+            client.write(checkTemp1());
           }
           
           if(strstr(buffer,"check temp1")){
-            client.write(CheckTemp2());
+            client.write(checkTemp2());
           }
         }
       }
@@ -111,7 +133,7 @@ void config_SocketServer(){
   socketServer.begin();
 }
 
-boolean Check_FridgeDoor() {
+int Check_FridgeDoor() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x00));      
   Wire.endTransmission();
