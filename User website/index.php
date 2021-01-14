@@ -102,7 +102,7 @@ function sendCMD($message){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.3.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
@@ -174,7 +174,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>Force:</p></td>
-                            <td><p> <i id="Chairforce" class="fas fa-couch" style="color:gray"></i> </p></td>
+                            <td><p> <i id="Chairforce" class="fas fa-chair" style="color:gray"></i> </p></td>
                         </tr>
                     </table>
                 </section>
