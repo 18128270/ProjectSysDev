@@ -35,6 +35,5 @@ private:
     int bytesBuff;                      // Amount of incoming bytes, testing purposes
     char incBuffer[1024];               // stores incoming buffer from Wemos
 	char outBuffer[100];
-	int tmp;
 	int val;							// return value of the checkfunction
 };

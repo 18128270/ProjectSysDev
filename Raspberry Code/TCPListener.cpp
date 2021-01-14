@@ -38,7 +38,8 @@ int TCPListener::run()
 {
     // Accept incoming (from PHP socket)
     addrlen = sizeof(struct sockaddr_in);
-    cout << "Waiting for incoming messages" << endl;
+    cout << " " << endl;
+    cout << "=== Waiting for incoming messages ===" << endl;
     if ((phpsocket = accept(m_socket, (struct sockaddr*)&address, &addrlen)) < 0) 
     {
         cerr << "Accepting failed";
@@ -50,9 +51,11 @@ int TCPListener::run()
     {
 
     }
+    memset(outBuffer, 0, sizeof(outBuffer));
+
     // cool int to string convert to be able to use send().
     val = CheckIncCommands();
-    tmp = sprintf(outBuffer,"%d",val);
+    sprintf(outBuffer,"%d",val);
     send(phpsocket, outBuffer, sizeof(outBuffer), 0);
     // after the outBuffer is sent back to PHP close the socket for the next command.
     close(phpsocket);

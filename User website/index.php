@@ -1,5 +1,5 @@
 <?php 
-/*header("Refresh: 60");*/
+header("Refresh: 60");
 
 if (isset($_GET["bed_led1_on"])) { echo "\n Reply From Server :".sendCMD("Bed led1 on"); }
 if (isset($_GET["bed_led1_off"])) { echo "\n Reply From Server :".sendCMD("Bed led1 off"); }
@@ -28,29 +28,6 @@ if (isset($_GET["wall_lcd_on"])) { echo "\n Reply From Server :".sendCMD("Wall l
 if (isset($_GET["wall_lcd_off"])) { echo "\n Reply From Server :".sendCMD("Wall lcd off"); }
 
 
-if (isset($_GET["checkled1"])) {
-
-	$message = "Bed led1 on";
-	$host = "192.168.178.21";
-	$port = 8080;
-	error_reporting(E_ALL);
-
-	// create socket
-	$socket = socket_create(AF_INET, SOCK_STREAM, 0) or die("Could not create socket\n");
-
-	// connect to server
-	$result = socket_connect($socket, $host, $port) or die("Could not connect to server\n");
-	
-	// Send msg
-	socket_write($socket, $message, strlen($message)) or die("Could not send data to server\n");
-	$result = socket_read ($socket, 1024) or die("Could not read server response\n");
-	echo "Reply From Server :".$result;
-
-	// Close socket
-	socket_close($socket);
-}
-
-/*
 //Hieronder de refreshes
 
 //Bed
@@ -58,6 +35,8 @@ $bed_led1 = sendCMD("Bed check led1");
 $bed_pushbutton1 = sendCMD("Bed check pushbutton1");
 $bed_force = sendCMD("Bed check force");
 
+
+/*
 //Chair
 $chair_led1 = sendCMD("Chair check led1");
 $chair_motor = sendCMD("Chair check motor");
@@ -123,26 +102,25 @@ function sendCMD($message){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.3.0/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <title>Hier moet je zijn</title>
+    <title>PSDV GP11</title>
 </head>
 
 <body>
     <div class="container" style="margin-bottom: 5em;">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>Hello Peter</h1>
-            </div>
-
+	<h1 id="welcome">PETER</h1>
+        <div class="col-md-12"></div>
+            <div class="row">
             <div id="bed" class="col-lg-6">
                 <section>
                     <h2>Bed</h2>
                     <table>
                         <tr>
                             <td><p>Led:</p></td>
-                            <td><p><?php echo $bed_led1; ?></p></td>
+                            <td> <i id="Bedled1" class="fas fa-lightbulb" style="color:gray"></i> </td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="bed_led1_on" class="btn-block btn-sm btn-info">Turn led on</button>
@@ -156,7 +134,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>Force:</p></td>
-                            <td><p><?php echo $bed_force; ?></p></td>
+			    <td> <i id="Force" class="fas fa-bed" style="color:gray"></i> </td>
                         </tr>
                     </table>
                 </section>
@@ -168,7 +146,7 @@ function sendCMD($message){
                     <table>
                         <tr>
                             <td><p>Led:</p></td>
-                            <td><p><?php echo $chair_led1; ?></p></td>
+                            <td><p> <i id="Chairled1" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="chair_led1_on" class="btn-block btn-sm btn-info">Turn led on</button>
@@ -182,7 +160,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>Motor:</p></td>
-                            <td><p><?php echo $chair_motor; ?></p></td>
+                            <td><p> <i id="Motorstate" class="fas fa-power-off" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="chair_motor_on" class="btn-block btn-sm btn-info">Turn motor on</button>
@@ -196,7 +174,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>Force:</p></td>
-                            <td><p><?php echo $chair_force; ?></p></td>
+                            <td><p> <i id="Chairforce" class="fas fa-couch" style="color:gray"></i> </p></td>
                         </tr>
                     </table>
                 </section>
@@ -208,7 +186,7 @@ function sendCMD($message){
                     <table>
                         <tr>
                             <td><p>Led:</p></td>
-                            <td><p><?php echo $column_led1; ?></p></td>
+                            <td><p> <i id="Columnled1" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="column_led1_on" class="btn-block btn-sm btn-info">Turn led on</button>
@@ -222,7 +200,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>Buzzer:</p></td>
-                            <td><p></p></td>
+                            <td><p> <i id="Columnbuzzer" class="fas fa-volume-up"</p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="column_pushbutton1_on" class="btn-block btn-sm btn-info">Turn buzzer on</button>
@@ -236,6 +214,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>CO2:</p></td>
+			    <td><p> <i id="Columnco2" class="fas fa-exclamation-triangle" ></i> </p></td>
                             <td><p><?php echo $column_co2; ?></p></td>
                         </tr>
                     </table>
@@ -248,7 +227,7 @@ function sendCMD($message){
                     <table>
                         <tr>
                             <td><p>Led 1:</p></td>
-                            <td><p><?php echo $door_led1; ?></p></td>
+                            <td><p> <i id="Doorled1" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="door_led1_on" class="btn-block btn-sm btn-info">Turn led on</button>
@@ -262,7 +241,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>Led 2:</p></td>
-                            <td><p><?php echo $door_led2; ?></p></td>
+                            <td><p> <i id="Doorled2" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="door_led2_on" class="btn-block btn-sm btn-info">Turn led on</button>
@@ -276,7 +255,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>Door:</p></td>
-                            <td><p><?php echo $door_door; ?></p></td>
+                            <td><p> <i id="Doordoor" class="fas fa-door-open" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="door_door_open" class="btn-block btn-sm btn-info">Open door</button>
@@ -298,7 +277,7 @@ function sendCMD($message){
                     <table>
                         <tr>
                             <td><p>Fridge door:</p></td>
-                            <td><p><?php echo $fridge_door; ?></p></td>
+			    <td><p> <i id="Fridgedoor" class="fas fa-door-open" style="color:gray"></i> </p></td>
                         </tr>
                         <tr>
                             <td><p>Temperature 1:</p></td>
@@ -318,7 +297,7 @@ function sendCMD($message){
                     <table>
                         <tr>
                             <td><p>Led :</p></td>
-                            <td><p><?php echo $tablelamp_led1; ?></p></td>
+                            <td><p> <i id="Lampled1" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="tablelamp_led1_on" class="btn-block btn-sm btn-info">Turn led on</button>
@@ -344,7 +323,7 @@ function sendCMD($message){
                     <table>
                         <tr>
                             <td><p>Led:</p></td>
-                            <td><p><?php echo $wall_led1; ?></p></td>
+                            <td><p> <i id="wall_led1" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="wall_led1_on" class="btn-block btn-sm btn-info">Turn led on</button>
@@ -358,7 +337,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>LCD:</p></td>
-                            <td><p><?php echo $wall_lcd; ?></p></td>
+                            <td><p> <i id="wall_lcd" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="wall_lcd_on" class="btn-block btn-sm btn-info">Turn LCD on</button>
@@ -385,24 +364,50 @@ function sendCMD($message){
         </div>
     </div>
 
-    <script>
-        function greeting() {
-            var today = new Date();
-            var hourNow = today.getHours();
-            var greeting;
-            switch(hourNow) {
-                case (hourNow > 18): greeting = 'Good evening Peter'; break;
-                case (hourNow > 12): greeting = 'Good afternoon Peter'; break;
-                case (hourNow > 10): greeting = 'Good morning Peter'; break;
-                default: 'Hallo Peter';
-            }
-            var h = document.createElement("H1");
-            h.appendChild(greeting);
-            document.body.appendChild(h);
-            // document.write('<h1>' + greeting + '</h1>');
-        }
-    </script>
-
 </body>
 
+<script>
+var today = new Date();
+var hourNow = today.getHours();
+var greeting;
+if(hourNow > 8){
+	greeting = "Good morning Peter";
+}
+if(hourNow>12){
+	greeting = "Good afternoon Peter";
+}
+if(hourNow>18){
+	greeting = "Good evening Peter";
+}
+if(hourNow<8){
+	greeting = "Good night Peter";
+}
+
+document.getElementById("welcome").innerHTML = greeting;
+</script>
+
 </html>
+
+<?php
+if($bed_led1 == 1){
+echo '<script>';
+echo 'document.getElementById("Bedled1").style.color="Lime";';
+echo '</script>';
+} else {
+echo '<script>';
+echo 'document.getElementById("Bedled1").style.color="Tomato";';
+echo '</script>';	
+}
+
+
+
+if($chair_led1 == 1){
+echo '<script>';
+echo 'document.getElementById("Chairled1").style.color="Lime";';
+echo '</script>';
+} else {
+echo '<script>';
+echo 'document.getElementById("Chairled1").style.color="Tomato";';
+echo '</script>';	
+}
+?>
