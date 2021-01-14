@@ -1,3 +1,91 @@
+<?php 
+/*header("Refresh: 60");*/
+
+if (isset($_GET["Led1on"])) {
+	echo "\n Reply From Server :".sendCMD("Bed led1 on");
+}
+
+if (isset($_GET["Led1off"])) {
+	echo "\n Reply From Server :".sendCMD("Bed led1 off");
+}
+
+if (isset($_GET["checkled1"])) {
+
+	$message = "Bed led1 on";
+	$host = "192.168.178.21";
+	$port = 8080;
+	error_reporting(E_ALL);
+
+	// create socket
+	$socket = socket_create(AF_INET, SOCK_STREAM, 0) or die("Could not create socket\n");
+
+	// connect to server
+	$result = socket_connect($socket, $host, $port) or die("Could not connect to server\n");
+	
+	// Send msg
+	socket_write($socket, $message, strlen($message)) or die("Could not send data to server\n");
+	$result = socket_read ($socket, 1024) or die("Could not read server response\n");
+	echo "Reply From Server :".$result;
+
+	// Close socket
+	socket_close($socket);
+}
+
+//Hieronder de refreshes
+
+//Bed
+$bed_led1 = sendCMD("Bed check led1");
+$bed_pushbutton1 = sendCMD("Bed check pushbutton1");
+$bed_force = sendCMD("Bed check force");
+
+/*
+//Chair
+
+
+//Column
+
+
+//DOOR
+
+$door_led1 = sendCMD("Door check led1");
+$door_led2 = sendCMD("Door check led2");
+$door_pushbutton1 = sendCMD("Door check pushbutton1");
+$door_pushbutton2 = sendCMD("Door check pushbutton2");
+
+//Fridge
+
+//Tablelamp
+
+//Wall
+
+*/
+
+
+
+?>
+
+<?php
+function sendCMD($message){
+	$host = "192.168.178.21";
+	$port = 8080;
+	error_reporting(E_ALL);
+
+	// create socket
+	$socket = socket_create(AF_INET, SOCK_STREAM, 0) or die("Could not create socket\n");
+
+	// connect to server
+	$result = socket_connect($socket, $host, $port) or die("Could not connect to server\n");
+
+	// Send Destination to server
+	socket_write($socket, $message, strlen($message)) or die("Could not send data to server\n");
+	$result = socket_read ($socket, 1024) or die("Could not read server response\n");
+	// Close socket
+	socket_close($socket);
+	return $result;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +95,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <title>PJSDV</title>
+    <title>Hier moet je zijn</title>
 </head>
 
 <body>
@@ -23,19 +111,19 @@
                     <table>
                         <tr>
                             <td><p>Led 1:</p></td>
-                            <td><p>?</p></td>
+                            <td><p><?php echo $bed_led1; ?></p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" class="btn-block btn-block btn-sm btn-info">Led aan</button>
+                                <button type="submit" name="Led1on" class="btn-block btn-block btn-sm btn-info">Led aan</button>
                                 </form>
                             </td>
                         </tr>
                         <tr>
                             <td><p>Led 2:</p></td>
-                            <td><p>?</p></td>
+                            <td><p><?php echo $bed_pushbutton1; ?></p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" class="btn-block btn-block btn-sm btn-info">Led aan</button>
+                                <button type="submit" name="Led1off" class="btn-block btn-block btn-sm btn-info">Led aan</button>
                                 </form>
                             </td>
                         </tr>
@@ -44,14 +132,14 @@
                             <td><p>?</p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" class="btn-block btn-block btn-sm btn-info">Deur open</button>
+                                <button type="submit" name="checkled1" class="btn-block btn-block btn-sm btn-info">Deur open</button>
                                 </form>
                             </td>
                         </tr>
                     </table>
                 </section>
             </div>
-            <!-- <div id="fridge" class="col-lg-6">
+	    <div id="fridge" class="col-lg-6">
                 <section>
                     <h2>Fridge</h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
@@ -59,7 +147,7 @@
                         laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
                         voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
                 </section>
-            </div> -->
+            </div> 
             <div id="column" class="col-lg-6">
                 <section>
                     <h2>Column</h2>
@@ -69,7 +157,7 @@
                             <td><p>?</p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" class="btn-block btn-sm btn-info">Led aan</button>
+                                <button type="submit" name="" class="btn-block btn-sm btn-info">Led aan</button>
                                 </form>
                             </td>
                         </tr>
@@ -85,7 +173,7 @@
                             <td><p>?</p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" class="btn-block btn-sm btn-info">Led aan</button>
+                                <button type="submit" name="" class="btn-block btn-sm btn-info">Led aan</button>
                                 </form>
                             </td>
                         </tr>
@@ -101,7 +189,7 @@
                             <td><p>?</p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" class="btn-block btn-sm btn-info">Led aan</button>
+                                <button type="submit" name="" class="btn-block btn-sm btn-info">Led aan</button>
                                 </form>
                             </td>
                         </tr>
@@ -110,7 +198,7 @@
                             <td><p>?</p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" class="btn-block btn-sm btn-info">Motor aan</button>
+                                <button type="submit" name="" class="btn-block btn-sm btn-info">Motor aan</button>
                                 </form>
                             </td>
                         </tr>
@@ -126,7 +214,7 @@
                             <td><p>?</p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" class="btn-block btn-sm btn-info">Led aan</button>
+                                <button type="submit" name="" class="btn-block btn-sm btn-info">Led aan</button>
                                 </form>
                             </td>
                         </tr>
@@ -135,7 +223,7 @@
                             <td><p>?</p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" class="btn-block btn-sm btn-info">Venster open</button>
+                                <button type="submit" name="" class="btn-block btn-sm btn-info">Venster open</button>
                                 </form>
                             </td>
                         </tr>
@@ -144,7 +232,7 @@
                             <td><p>?</p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" class="btn-block btn-sm btn-info">RGB aan</button>
+                                <button type="submit" name="" class="btn-block btn-sm btn-info">RGB aan</button>
                                 </form>
                             </td>
                         </tr>
@@ -160,7 +248,7 @@
                             <td><p>?</p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" class="btn-block btn-sm btn-info">Led aan</button>
+                                <button type="submit" name="" class="btn-block btn-sm btn-info">Led aan</button>
                                 </form>
                             </td>
                         </tr>

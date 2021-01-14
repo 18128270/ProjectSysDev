@@ -51,18 +51,26 @@ void loop() {
           }
           
           if(strstr(buffer,"led1 on")){
-            client.write(LED1_on());
+            LED1_on();
+            client.write("1");
+
           }
           
           if(strstr(buffer,"led1 off")){
-            client.write(LED1_off());
+            LED1_off();
+            client.write("1");
           }
           
           if(strstr(buffer,"check led1")){
-            client.write(Check_Led1());
+            if Check_Led1(){
+              client.write("1");
+            } else {
+              client.write("0");
+            }
+
           }
 
-          if(strstr(buffer,"check pushbutton")){
+          if(strstr(buffer,"check pushbutton1")){
             client.write(Check_Pushbutton1());
           }
           
