@@ -18,6 +18,11 @@ WiFiServer socketServer(PORT);
 
 int i = 0;
 char buffer[100];
+char outbuffer[100];
+
+int ledstate = 0;
+int buzzstate = 0;
+
 
 void setup() {
   Wire.begin();
@@ -30,8 +35,17 @@ void loop() {
     buffer[i]= '\0';
     i++;
   }
+  i = 0;
+  while (i<100){
+    outbuffer[i]= '\0';
+    i++;
+  }
+  i = 0;
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
+  
+  // pushbutton1 toggles led1
+  pushButton1();
 
   // If a new client connects,
   if (client) {
@@ -51,31 +65,39 @@ void loop() {
           }
           
           if(strstr(buffer,"led1 on")){
-            client.write(LED1_on());
+            LED1_on();
+            sprintf(outbuffer, "%d", LED1_on());
+            client.write(outbuffer);
           }
           
           if(strstr(buffer,"led1 off")){
-            client.write(LED1_off());
+            LED1_off();
+            sprintf(outbuffer, "%d", LED1_off());
+            client.write(outbuffer);
           }
           
           if(strstr(buffer,"buzzer on")){
-            client.write(Buzzer_on());
+            Buzzer_on();
+            sprintf(outbuffer, "%d", Buzzer_on());
+            client.write(outbuffer);
           }
           
           if(strstr(buffer,"buzzer off")){
-            client.write(Buzzer_off());
+            Buzzer_off();
+            sprintf(outbuffer, "%d", Buzzer_off());
+            client.write(outbuffer);
           }
 
           if(strstr(buffer,"check led1")){
-            client.write(Check_Led1());
-          }
-          
-          if(strstr(buffer,"check pushbutton1")){
-            client.write(Check_Pushbutton1());
+            Check_Led1();
+            sprintf(outbuffer, "%d", Check_Led1());
+            client.write(outbuffer);
           }
           
           if(strstr(buffer,"check co2")){
-            client.write(Check_CO2());
+            Check_CO2();
+            sprintf(outbuffer, "%d", Check_CO2());
+            client.write(outbuffer);
           }
         }
       }
@@ -102,7 +124,7 @@ void config_MAX11647() {
   Wire.endTransmission(); 
 }
 
-void config_WifiConnect(){
+void config_WifiConnect() {
   Serial.print("Connecting to ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
@@ -117,7 +139,7 @@ void config_WifiConnect(){
   Serial.println(" =========");
 }
 
-void config_SocketServer(){
+void config_SocketServer() {
   Serial.println("");
   Serial.print("========= Socket Server is up on port ");
   Serial.print(PORT);
@@ -126,11 +148,20 @@ void config_SocketServer(){
   socketServer.begin();
 }
 
+void pushButton1() {
+  if (Check_Pushbutton1() && ledstate == 0) {
+    LED1_on();
+  } else {
+    LED1_off();
+  }
+}
+
 void LED1_on() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x01));
   Wire.write(byte(0x01<<5));
   Wire.endTransmission();
+  ledstate = 1;
 }
 
 void LED1_off() {
@@ -138,13 +169,15 @@ void LED1_off() {
   Wire.write(byte(0x01));
   Wire.write(byte(0x00<<5));
   Wire.endTransmission();
-}
+  ledstate = 0;
+  }
 
 void Buzzer_on() {
   Wire.beginTransmission(0x38); //prolly needs PWM
   Wire.write(byte(0x01));
   Wire.write(byte(0x01<<4));
   Wire.endTransmission();
+  buzzstate = 1;
 }
 
 void buzzer_off() {
@@ -152,6 +185,7 @@ void buzzer_off() {
   Wire.write(byte(0x01));
   Wire.write(byte(0x00<<4));
   Wire.endTransmission();
+  buzzstate = 0;
 }
 
 boolean Check_Led1() {
@@ -159,11 +193,12 @@ boolean Check_Led1() {
   Wire.write(byte(0x01));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  
   if(Wire.read() & 0x11) { //Check output D05
-     return 1;
+    ledstate = 1;
+    return 1;
   } else {
-     return 0;
+    ledstate = 0;
+    return 0;
   }
 }
 
@@ -172,19 +207,18 @@ boolean Check_Pushbutton1() {
   Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  
   if(Wire.read() & 0x01) {
-     return 1;
+    return 1;
   } else {
-     return 0; 
+    return 0; 
   }
 }
 
 unsigned int Check_CO2(){
   Wire.requestFrom(0x36, 2);
   unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
-
   if(anin0 >= 1000) {
+    Buzzer_on();
     return 1;
   } else {
     return 0;

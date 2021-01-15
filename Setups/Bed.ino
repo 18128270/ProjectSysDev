@@ -34,17 +34,17 @@ void loop() {
     i++;
   }
   i = 0;
-
   while (i<100){
     outbuffer[i]= '\0';
     i++;
   }
   i = 0;
+
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
 
-  //pushbutton1 toggles led1
-  pushButton();
+  // pushbutton1 toggles led1
+  pushButton1();
   
   // If a new client connects,
   if (client) {
@@ -131,7 +131,7 @@ void config_SocketServer(){
   socketServer.begin();
 }
 
-void pushButton(){
+void pushButton1(){
   if (Check_Pushbutton1() && ledstate == 0) {
     LED1_on();
   } else {

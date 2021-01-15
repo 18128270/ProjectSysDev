@@ -18,6 +18,10 @@ WiFiServer socketServer(PORT);
 
 int i = 0;
 char buffer[100];
+char outbuffer[100];
+
+int ledstate = 0;
+int motorstate = 0;
 
 void setup() {
   Wire.begin();
@@ -30,8 +34,16 @@ void loop() {
     buffer[i]= '\0';
     i++;
   }
+  while (i<100){
+    outbuffer[i]= '\0';
+    i++;
+  }
+  
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
+
+  // pushbutton1 toggles led1 & motor
+  pushButton1();
 
   // If a new client connects,
   if (client) {
@@ -51,35 +63,39 @@ void loop() {
           }
 
           if(strstr(buffer,"led1 on")){
-            client.write(LED1_on());
+            LED1_on();
+            client.write("ACK");
           }
           
           if(strstr(buffer,"led1 off")){
-            client.write(LED1_off());
+            LED1_off();
+            client.write("ACK");
           }
           
           if(strstr(buffer,"motor on")){
-            client.write(Motor_on());
+            Motor_on();
+            client.write("ACK");
           }
           
           if(strstr(buffer,"motor off")){
-            client.write(Motor_off());
+            Motor_off();
+            client.write("ACK");
           }
 
           if(strstr(buffer,"check led1")){
-            client.write(Check_Led1());
+            sprintf(outbuffer, "%d", Check_Led1());
+            client.write(outbuffer);
           }
 
           if(strstr(buffer,"check motor")){
-            client.write(Check_Motor());
+            sprintf(outbuffer, "%d", Check_Motor());
+            client.write(outbuffer);
           }
           
-          if(strstr(buffer,"check pushbutton1")){
-            client.write(Check_Pushbutton1());
-          }
           
           if(strstr(buffer,"check force")){
-            client.write(Check_Force());
+            sprintf(outbuffer, "%d", Check_Force());
+            client.write(outbuffer);
           }
         }
       }
@@ -130,11 +146,29 @@ void config_SocketServer(){
   socketServer.begin();
 }
 
+//pushbutton toggles both motor and led
+void pushButton1() {
+  if Check_Pushbutton1() {
+    if ledstate == 0 {
+      LED1_on();
+    }else{
+      LED1_off();
+    }
+    if motorstate == 0 {
+      Motor_on();
+    } else {
+      Motor_off();
+    }
+  }
+}
+
+
 void LED1_on() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x01));
   Wire.write(byte(0x01<<4));
   Wire.endTransmission();
+  ledstate = 1;
 }
 
 void LED1_off() {
@@ -142,13 +176,16 @@ void LED1_off() {
   Wire.write(byte(0x01));
   Wire.write(byte(0x00<<4));
   Wire.endTransmission();
+  ledstate = 0;
 }
 
+// TODO:PWM for motor needs to be implemented this doens't work
 void Motor_on() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x01));
   Wire.write(byte(0x01<<5));
   Wire.endTransmission();
+  motorstate = 1;
 }
 
 void Motor_off() {
@@ -156,6 +193,7 @@ void Motor_off() {
   Wire.write(byte(0x01));
   Wire.write(byte(0x00<<5));
   Wire.endTransmission();
+  motorstate = 0;
 }
 
 boolean Check_Led1() {
@@ -166,8 +204,10 @@ boolean Check_Led1() {
   
   if(Wire.read() & 0x10) {
     return 1;
+    ledstate = 1;
   } else {
     return 0;
+    ledstate = 0;
   }
 }
 
@@ -179,8 +219,10 @@ boolean Check_Motor(){
   
   if(Wire.read() & 0x11) { //Check output DO5
     return 1;
+    motorstate = 1;
   } else {
     return 0;
+    motorstate = 0;
   }
 }
 

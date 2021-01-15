@@ -19,12 +19,13 @@ WiFiServer socketServer(PORT);
 
 int i = 0;
 char buffer[100];
+char outbuffer[100];
 
 int tijdNieuw;
 int tijdOud;
 int maxTijd = 30000;
 
-int fridgeDoorState;
+int fridgedoorstate;
 
 void setup() {
   Wire.begin();
@@ -34,6 +35,10 @@ void setup() {
 void loop() {
   while (i<100){
     buffer[i]= '\0';
+    i++;
+  }
+  while (i<100){
+    outbuffer[i]= '\0';
     i++;
   }
   // Listen for incoming clients
@@ -63,26 +68,28 @@ void loop() {
           
           if(strstr(buffer,"check fridgedoor")){
             //0 = DICHT, 1 = OPEN, 2 = TE LANG OPEN
-            fridgeDoorState = Check_FridgeDoor();
+            fridgedoorstate = Check_FridgeDoor();
             tijdNieuw = millis();
-            if (fridgeDoorState == 0) {
-              client.write(0);
+            if (fridgedoorstate == 0) {
+              client.write("0");
             } else {
               if (tijdNieuw - tijdOud >= maxTijd) {
-                client.write(2);
+                client.write("2");
                 tijdNieuw = tijdOud;
               } else {
-                client.write(1);
+                client.write("1");
               }              
             }
           }
           
           if(strstr(buffer,"check temp1")){
-            client.write(checkTemp1());
+            sprintf(outbuffer, "%d", checkTemp1());
+            client.write(outbuffer);
           }
           
           if(strstr(buffer,"check temp1")){
-            client.write(checkTemp2());
+            sprintf(outbuffer, "%d", checkTemp2());
+            client.write(outbuffer);
           }
         }
       }

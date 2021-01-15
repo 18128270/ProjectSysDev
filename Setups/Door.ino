@@ -22,6 +22,11 @@ WiFiServer socketServer(PORT);
 
 int i = 0;
 char buffer[100];
+char outbuffer[100];
+
+int ledstate1 = 0;
+int ledstate2 = 0;
+int doorstate = 0;
 
 void setup() {
   Wire.begin();
@@ -40,9 +45,17 @@ void loop() {
     buffer[i]= '\0';
     i++;
   }
+  i = 0;
+  while (i<100){
+    outbuffer[i]= '\0';
+    i++;
+  }
+  i = 0;
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
 
+  // pushbutton1 toggles led1
+  pushButton1();
   // If a new client connects,
   if (client) {
     Serial.println("New Client is connected");
@@ -61,47 +74,47 @@ void loop() {
           }
           
           if(strstr(buffer,"led1 on")){
-            client.write(LED1_on());
+            LED1_on();
+            client.write("ACK");
           }
           
           if(strstr(buffer,"led1 off")){
-            client.write(LED1_off());
+            LED1_off();
+            client.write("ACK");
           }
           
           if(strstr(buffer,"led2 on")){
-            client.write(LED2_on());
+            LED2_on();
+            client.write("ACK");
           }
           
           if(strstr(buffer,"led2 off")){
-            client.write(LED2_off());
+            LED2_off();
+            client.write("ACK");
           }
 
           if(strstr(buffer,"door open")){
-            client.write(Door_open());
+            Door_open();
+            client.write("ACK");
           }
 
           if(strstr(buffer,"door close")){
-            client.write(Door_close());
+            Door_close();
+            client.write("ACK");
           }
           
           if(strstr(buffer,"check door")){
-            client.write(Check_Door());
+            sprintf(outbuffer, "%d", Check_Door());
+            client.write(outbuffer);
           }
 
           if(strstr(buffer,"check led1")){
-            client.write(Check_Led1());
-          }
+            sprintf(outbuffer, "%d", Check_Led1());
+            client.write(outbuffer);
 
           if(strstr(buffer,"check led2")){
-            client.write(Check_Led2());
-          }
-          
-          if(strstr(buffer,"check pushbutton1")){
-            client.write(Check_Pushbutton1());
-          }
-
-          if(strstr(buffer,"check pushbutton2")){
-            client.write(Check_Pushbutton2());
+            sprintf(outbuffer, "%d", Check_Led2());
+            client.write(outbuffer);
           }
         }
       }
@@ -152,11 +165,30 @@ void config_SocketServer(){
   socketServer.begin();
 }
 
+// TODO deze knop moet nog iets doen
+void pushButton1(){
+  if (Check_Pushbutton1() && /*state*/ == 0) {
+  // doe iets
+  } else { 
+  // doe iets anders
+  }
+}
+
+// TODO deze knop moet nog iets doen
+void pushButton2(){
+  if (Check_Pushbutton2() && /*state*/ == 0) {
+  // doe iets
+  } else { 
+  // doe iets anders
+  }
+}
+
 void LED1_on() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x01));
   Wire.write(byte(0x01<<4));
   Wire.endTransmission();
+  ledstate1 = 1;
 }
 
 void LED1_off() {
@@ -164,6 +196,7 @@ void LED1_off() {
   Wire.write(byte(0x01));
   Wire.write(byte(0x00<<4));
   Wire.endTransmission();
+  ledstate1 = 0;
 }
 
 void LED2_on() {
@@ -171,6 +204,7 @@ void LED2_on() {
   Wire.write(byte(0x01));
   Wire.write(byte(0x01<<5));
   Wire.endTransmission();
+  ledstate2 = 1;
 }
 
 void LED2_off() {
@@ -178,14 +212,17 @@ void LED2_off() {
   Wire.write(byte(0x01));
   Wire.write(byte(0x00<<5));
   Wire.endTransmission();
+  ledstate2 = 0;
 }
 
 void Door_open() {
   doorServo.write(90);
+  doorstate = 1;
 }
 
 void Door_close() {
   doorServo.write(0);
+  doorstate = 0;
 }
 
 boolean Check_Door() {
@@ -199,8 +236,10 @@ boolean Check_Led1() {
   Wire.requestFrom(0x38, 1);
   
   if(Wire.read() & 0x10) {
+    ledstate1 = 1;
     return 1;
   } else {
+    ledstate1 = 0;
     return 0;
   }
 }
@@ -212,8 +251,10 @@ boolean Check_Led2() {
   Wire.requestFrom(0x38, 1);
   
   if(Wire.read() & 0x11) {
+    ledstate2 = 1;
     return 1;
   } else {
+    ledstate2 = 0;
     return 0;
   }
 }

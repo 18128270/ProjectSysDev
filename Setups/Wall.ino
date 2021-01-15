@@ -19,6 +19,10 @@ WiFiServer socketServer(PORT);
 
 int i = 0;
 char buffer[100];
+char outbuffer[100];
+
+int ledstate = 0;
+int lcdstate = 0;
 
 void setup() {
   Wire.begin();
@@ -34,8 +38,15 @@ void loop() {
     buffer[i]= '\0';
     i++;
   }
+  while (i<100){
+    outbuffer[i]= '\0';
+    i++;
+  }
+
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
+
+  // if ldr too damn high auto dim dus lcd = 1;
 
   // If a new client connects,
   if (client) {
@@ -64,19 +75,28 @@ void loop() {
           }
           
           if(strstr(buffer,"led1 on")){
-            client.write(LED1_on());
+            LED1_on();
+            client.write("ACK");
           }
           
           if(strstr(buffer,"led1 off")){
-            client.write(LED1_off());
+            LED1_off();
+            client.write("ACK");
+          }
+
+          if(strstr(buffer,"check led1")){
+            sprintf(outbuffer, "%d", Check_Led1();
+            client.write(outbuffer);
           }
 
           if(strstr(buffer,"check ldr")){
-            client.write(Check_LDR());
+            sprintf(outbuffer, "%d", Check_LDR());
+            client.write(outbuffer);
           }
 
           if(strstr(buffer,"check potmeter")){
-            client.write(Check_Potentiometer());
+            sprintf(outbuffer, "%d", Check_Potentiometer());
+            client.write(outbuffer);
           }
         }
       }
@@ -127,11 +147,14 @@ void config_SocketServer(){
   socketServer.begin();
 }
 
+
+
 void LCD_panel_on() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x01));
   Wire.write(byte(0x01<<4));
   Wire.endTransmission();
+  lcdstate = 1;
 }
 
 void LCD_panel_off() {
@@ -139,14 +162,35 @@ void LCD_panel_off() {
   Wire.write(byte(0x01));
   Wire.write(byte(0x00<<4));
   Wire.endTransmission();
+  lcdstate = 0;
 }
 
 void LED1_on() {
   digitalWrite(D5, HIGH);
+  ledstate = 1;
 }
 
 void LED1_off() {
   digitalWrite(D5, LOW);
+  ledstate = 0;
+}
+
+boolean Check_Led1(){
+  return digitalRead(D5);
+}
+
+boolean Check_LCD(){
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x01));
+  Wire.requestFrom(0x38, 1);
+
+  if(Wire.read() & 0x10){
+    lcdstate = 1;
+    return 1;
+  } else {
+    lcdstate = 0;
+    return 0;
+  }
 }
 
 unsigned int Check_LDR() {

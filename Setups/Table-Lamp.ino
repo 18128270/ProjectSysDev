@@ -19,6 +19,10 @@ WiFiServer socketServer(PORT);
 
 int i = 0;
 char buffer[100];
+char outbuffer[100];
+
+int ledstate = 0;
+int lcdstate = 0;
 
 void setup() {
   Wire.begin();
@@ -34,8 +38,14 @@ void loop() {
     buffer[i]= '\0';
     i++;
   }
+  while (i<100){
+    outbuffer[i]= '\0';
+    i++;
+  }
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
+
+  // TODO: sensor(); movement na 1 minuut auto uit.
 
   // If a new client connects,
   if (client) {
@@ -55,15 +65,19 @@ void loop() {
           }
           
           if(strstr(buffer,"led1 on")){
-            client.write(LED1_on());
+            LED1_on();
+            client.write("ACK");
           }
           
           if(strstr(buffer,"led1 off")){
-            client.write(LED1_off());
+            LED1_off();
+            client.write("ACK");
           }
           
           if(strstr(buffer,"check sensor")){
-            client.write(Check_Sensor());
+            Check_Sensor();
+            sprintf(outbuffer, "%d", Check_Sensor());
+            client.write(outbuffer);
           }
         }
       }
@@ -114,12 +128,18 @@ void config_SocketServer(){
   socketServer.begin();
 }
 
+void sensor(){
+  // If sensor is triggered turn on led, after ~60 min turn off auto
+}
+
 void LED1_on() {
   digitalWrite(D5, HIGH);
+  ledstate = 1;
 }
 
 void LED1_off() {
   digitalWrite(D5, LOW);
+  ledstate = 0;
 }
 
 boolean Check_Sensor() {
