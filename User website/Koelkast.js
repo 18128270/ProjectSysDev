@@ -1,1 +1,0 @@
-window.alert("Peter, je koelkast staat nog open!");
