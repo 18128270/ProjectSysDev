@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <Wire.h>
 
-//wire.h definitions
+// wire.h definitions
 #define I2C_SDL D1
 #define I2C_SDA D2
 
@@ -10,16 +10,18 @@
 const char* ssid     = "WiFi_D3_GP11";
 const char* password = "GP11Wier?";
 
+// Define port for network
+#define PORT 8082
+
+// Define static IP and gateway
 IPAddress local_IP(192,168,4,12);
 IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
-//define port for network
-#define PORT 8082
-
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);
 
+// init vars
 int i = 0;
 char buffer[100];
 char outbuffer[100];
@@ -49,6 +51,7 @@ void loop() {
     i++;
   }
   i = 0;
+
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
   
@@ -214,7 +217,7 @@ boolean Check_Led1() {
   Wire.write(byte(0x01));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  if(Wire.read() & 0x11) { //Check output D05
+  if(Wire.read() & 0x20) { //Check output D05
     ledstate = 1;
     return 1;
   } else {

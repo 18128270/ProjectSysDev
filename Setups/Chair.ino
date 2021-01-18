@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <Wire.h>
 
-//wire.h definitions
+// wire.h definitions
 #define I2C_SDL D1
 #define I2C_SDA D2
 
@@ -10,13 +10,18 @@
 const char* ssid     = "WiFi_D3_GP11";
 const char* password = "GP11Wier?";
 
-
-//define port for network
+// Define port for network
 #define PORT 8081
 
-// Set web server port number to 8080
+// Define static IP and gateway
+IPAddress local_IP(192,168,4,11);
+IPAddress gateway(192,168,4,1);
+IPAddress subnet(255,255,255,0);
+
+// Set web server port number to PORT
 WiFiServer socketServer(PORT);
 
+// init vars
 int i = 0;
 char buffer[100];
 char outbuffer[100];
@@ -24,18 +29,14 @@ char outbuffer[100];
 int ledstate = 0;
 int motorstate = 0;
 
-  IPAddress local_IP(192,168,4,11);
-  IPAddress gateway(192,168,4,1);
-  IPAddress subnet(255,255,255,0);
 
 void setup() {
   Wire.begin();
   Serial.begin(115200);
   config_WifiConnect();
-  config_SocketServer();
   config_PCA9554();
   config_MAX11647();
-  
+  config_SocketServer();
 }
 
 void loop() {
@@ -166,7 +167,7 @@ void config_SocketServer(){
   socketServer.begin();
 }
 
-//pushbutton toggles both motor and led
+// pushbutton toggles both motor and led
 void pushButton1(){
   if ((Check_Pushbutton1() && ledstate == 0) || (Check_Pushbutton1() && motorstate == 0)) {
     delay(100);
@@ -181,7 +182,6 @@ void pushButton1(){
         LED1_off();
         Motor_off();
       }
-    
   }
 }
 
@@ -232,11 +232,9 @@ boolean Check_Led1() {
   if(Wire.read() & 0x10) { //Check output DO4
     ledstate = 1;
     return 1;
-    
   } else {
     ledstate = 0;
     return 0;
-    
   }
 }
 
@@ -249,11 +247,9 @@ boolean Check_Motor(){
   if(Wire.read() & 0x20) { //Check output DO5
     motorstate = 1;
     return 1;
-    
   } else {
     motorstate = 0;
     return 0;
-    
   }
 }
 

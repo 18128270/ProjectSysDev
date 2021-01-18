@@ -1,9 +1,9 @@
 #include <ESP8266WiFi.h>
 #include <stdlib.h>
 #include <Wire.h>
-#include <Servo.h> 
+#include <FastLED.h>
 
-//wire.h definitions
+// wire.h definitions
 #define I2C_SDL D1
 #define I2C_SDA D2
 
@@ -11,16 +11,26 @@
 const char* ssid     = "WiFi_D3_GP11";
 const char* password = "GP11Wier?";
 
+// Define port for network
+#define PORT 8086
+
+// Define staic IP and gateway
 IPAddress local_IP(192,168,4,16);
 IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
-//define port for network
-#define PORT 8086
-
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);
 
+#define LED_TYPE    WS2812B // Type of LED
+#define COLOR_ORDER GRB     // Sequence of colors in data stream
+#define NUM_LEDS    3       // Amount of LEDS numbered [0..2]
+#define DATA_PIN    D5      // LED data pin
+#define BRIGHTNESS  200     // Brightness range [OFF..ON] = [0..255]
+
+CRGB leds[NUM_LEDS]
+
+// init vars
 int i = 0;
 char buffer[100];
 char outbuffer[100];
@@ -28,12 +38,17 @@ char outbuffer[100];
 int ledstate = 0;
 int lcdstate = 0;
 
+
 void setup() {
   Wire.begin();
+  Serial.begin(115200);
   config_WifiConnect();
+  config_PCA9554();
+  config_MAX11647();
+  config_SocketServer();
   
-  //set pin D5 as output  
-  pinMode(D5, OUTPUT);
+  // FastLED library init
+  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
 }
 
 void loop() {
@@ -42,16 +57,19 @@ void loop() {
     buffer[i]= '\0';
     i++;
   }
+  i = 0;
   while (i<100){
     outbuffer[i]= '\0';
     i++;
   }
+  i = 0;
 
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
 
-  // if ldr too damn high auto dim dus lcd = 1;
-
+  // === MUST TEST === Potmeter changes LED colour hopefully
+  setColour();
+  
   // If a new client connects,
   if (client) {
     Serial.println("New Client is connected");
@@ -156,8 +174,6 @@ void config_SocketServer(){
   socketServer.begin();
 }
 
-
-
 void LCD_panel_on() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x01));
@@ -202,15 +218,41 @@ boolean Check_LCD(){
   }
 }
 
-unsigned int Check_LDR() {
+void SetColour(){
+  if (Check_Potentiometer() < 341){
+    color = Check_Potentiometer() % 256
+    int R = color;
+    int G = 0;
+    int B = 0;
+  }
+  if (341 >= Check_Potentiometer() < 1024){
+    color = Check_Potentiometer() % 256
+    int R = 0;
+    int G = color;
+    int B = 0;
+  }
+  if (Check_Potentiometer() >= 1024){
+    color = Check_Potentiometer() % 256 
+    int R = 0;
+    int G = 0;
+    int B = color;
+  }
+  fill_solid( &(Leds[0]), 3 /*number of leds*/, CRGB(R, G, B));
+  // Send settings to D5 (ARGB LEDS)
+  FastLED.show();
+}
+
+int Check_LDR() {
   Wire.requestFrom(0x36, 2);
-  unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
+  int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
+  Serial.println(anin0);
   return anin0;
 }
 
-unsigned int Check_Potentiometer() {
+int Check_Potentiometer() {
   Wire.requestFrom(0x36, 4);
-  unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read(); 
-  unsigned int anin1 = ((Wire.read()&0x03) << 8) | Wire.read();
+  int anin0 = ((Wire.read()&0x03) << 8) | Wire.read(); 
+  int anin1 = ((Wire.read()&0x03) << 8) | Wire.read();
+  Serial.println(anin1);
   return anin1;
 }

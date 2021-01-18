@@ -1,9 +1,9 @@
 #include <ESP8266WiFi.h>
 #include <stdlib.h>
 #include <Wire.h>
-#include <Servo.h> 
+#include <FastLED.h>
 
-//wire.h definitions
+// wire.h definitions
 #define I2C_SDL D1
 #define I2C_SDA D2
 
@@ -11,16 +11,26 @@
 const char* ssid     = "WiFi_D3_GP11";
 const char* password = "GP11Wier?";
 
+// Define port for network
+#define PORT 8085
+
+// Define static IP and gateway
 IPAddress local_IP(192,168,4,15);
 IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
-//define port for network
-#define PORT 8085
-
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);
 
+#define LED_TYPE    WS2812B // Type of LED
+#define COLOR_ORDER GRB     // Sequence of colors in data stream
+#define NUM_LEDS    1       // Amount of LEDS numbered [0]
+#define DATA_PIN    D5      // LED data pin
+#define BRIGHTNESS  200     // Brightness range [OFF..ON] = [0..255]
+
+CRGB leds[NUM_LEDS]
+
+// init vars
 int i = 0;
 char buffer[100];
 char outbuffer[100];
@@ -28,12 +38,21 @@ char outbuffer[100];
 int ledstate = 0;
 int lcdstate = 0;
 
+unsigned long tijdNieuw;
+unsigned long tijdOud;
+unsigned long maxTijd = 30000;
+
+
 void setup() {
   Wire.begin();
+  Serial.begin(115200);
   config_WifiConnect();
+  config_PCA9554();
+  config_MAX11647();
+  config_SocketServer();
   
-  //set pin D5 as output  
-  pinMode(D5, OUTPUT);
+ // FastLED library init
+  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
 }
 
 void loop() {
@@ -42,14 +61,20 @@ void loop() {
     buffer[i]= '\0';
     i++;
   }
+  i = 0;
   while (i<100){
     outbuffer[i]= '\0';
     i++;
   }
+  i = 0;
+  
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
 
-  // TODO: sensor(); movement na 1 minuut auto uit.
+  // check if sensor is triggered, turns led auto off after maxTijd is exceeded
+  if(Check_Sensor == 1 || ledstate == 1){
+    LedAutoOff();
+  }
 
   // If a new client connects,
   if (client) {
@@ -77,9 +102,13 @@ void loop() {
             LED1_off();
             client.write("ACK");
           }
-          
+
+          if(strstr(buffer,"check led1")){
+            sprintf(outbuffer, "%d", Check_Led1());
+            client.write(outbuffer);
+          }
+
           if(strstr(buffer,"check sensor")){
-            Check_Sensor();
             sprintf(outbuffer, "%d", Check_Sensor());
             client.write(outbuffer);
           }
@@ -137,8 +166,16 @@ void config_SocketServer(){
   socketServer.begin();
 }
 
-void sensor(){
-  // If sensor is triggered turn on led, after ~60 min turn off auto
+// TESTEN NOT WORKING PROBABLY THIS SHIT IS WACK
+void LedAutoOff(){
+  sensorTriggered = Check_Sensor();
+  tijdNieuw = millis();
+  if(sensorTriggered == 1 && ledstate == 0) {
+    LED1_on();
+  } else if (tijdNieuw - tijdOud >= maxTijd){
+    // Led is on for too long
+    LED1_off();
+  }
 }
 
 void LED1_on() {
@@ -149,6 +186,10 @@ void LED1_on() {
 void LED1_off() {
   digitalWrite(D5, LOW);
   ledstate = 0;
+}
+
+int Check_Led1(){
+  return(digitalRead(D5));
 }
 
 boolean Check_Sensor() {

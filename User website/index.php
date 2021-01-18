@@ -1,5 +1,5 @@
 <?php 
-header("Refresh: 60");
+header("Refresh: 30");
 
 if (isset($_GET["bed_led1_on"])) { echo "\n Reply From Server :".sendCMD("Bed led1 on"); }
 if (isset($_GET["bed_led1_off"])) { echo "\n Reply From Server :".sendCMD("Bed led1 off"); }
@@ -32,33 +32,27 @@ if (isset($_GET["wall_lcd_off"])) { echo "\n Reply From Server :".sendCMD("Wall 
 
 //Bed
 $bed_led1 = sendCMD("Bed check led1");
-$bed_pushbutton1 = sendCMD("Bed check pushbutton1");
 $bed_force = sendCMD("Bed check force");
 
-
-/*
 //Chair
 $chair_led1 = sendCMD("Chair check led1");
 $chair_motor = sendCMD("Chair check motor");
-$chair_pushbutton1 = sendCMD("Chair check pushbutton1");
 $chair_force = sendCMD("Chair check force");
 
+/*
 //Column
 $column_led1 = sendCMD("Column check led1");
-$column_pushbutton1 = sendCMD("Column check pushbutton1");
 $column_co2 = sendCMD("Column check co2");
 
 //Door
 $door_door = sendCMD("Door check door");
 $door_led1 = sendCMD("Door check led1");
 $door_led2 = sendCMD("Door check led2");
-$door_pushbutton1 = sendCMD("Door check pushbutton1");
-$door_pushbutton2 = sendCMD("Door check pushbutton2");
 
 //Fridge
-$fridge_door = sendCMD("Fridge check fridgedoor")
-$fridge_temp1 = sendCMD("Fridge check temp1")
-$fridge_temp2 = sendCMD("Fridge check temp2")
+$fridge_door = sendCMD("Fridge check fridgedoor");
+$fridge_temp1 = sendCMD("Fridge check temp1");
+$fridge_temp2 = sendCMD("Fridge check temp2");
 
 //Tablelamp
 $tablelamp_led1 = sendCMD("Tablelamp check led1");
@@ -68,7 +62,6 @@ $tablelamp_sensor = sendCMD("Tablelamp check sensor");
 $wall_lcd = sendCMD("Wall check lcd");
 $wall_ldr = sendCMD("Wall check ldr");
 $wall_led1 = sendCMD("Wall check led1");
-$wall_potentiometer = sendCMD("Wall check potmeter");
 
 */
 
@@ -76,7 +69,7 @@ $wall_potentiometer = sendCMD("Wall check potmeter");
 
 <?php
 function sendCMD($message){
-	$host = "192.168.178.21";
+	$host = "192.168.4.1";
 	$port = 8080;
 	error_reporting(E_ALL);
 
@@ -95,6 +88,8 @@ function sendCMD($message){
 }
 
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -134,7 +129,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>Force:</p></td>
-			    <td> <i id="Force" class="fas fa-bed" style="color:gray"></i> </td>
+			    <td> <i id="BedForce" class="fas fa-bed" style="color:gray"></i> </td>
                         </tr>
                     </table>
                 </section>
@@ -160,7 +155,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>Motor:</p></td>
-                            <td><p> <i id="Motorstate" class="fas fa-power-off" style="color:gray"></i> </p></td>
+                            <td><p> <i id="ChairMotor" class="fas fa-power-off" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="chair_motor_on" class="btn-block btn-sm btn-info">Turn motor on</button>
@@ -174,7 +169,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>Force:</p></td>
-                            <td><p> <i id="Chairforce" class="fas fa-chair" style="color:gray"></i> </p></td>
+                            <td><p> <i id="ChairForce" class="fas fa-chair" style="color:gray"></i> </p></td>
                         </tr>
                     </table>
                 </section>
@@ -323,7 +318,7 @@ function sendCMD($message){
                     <table>
                         <tr>
                             <td><p>Led:</p></td>
-                            <td><p> <i id="wall_led1" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
+                            <td><p> <i id="Wallled1" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="wall_led1_on" class="btn-block btn-sm btn-info">Turn led on</button>
@@ -337,7 +332,7 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>LCD:</p></td>
-                            <td><p> <i id="wall_lcd" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
+                            <td><p> <i id="Walllcd" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
                                 <button type="submit" name="wall_lcd_on" class="btn-block btn-sm btn-info">Turn LCD on</button>
@@ -366,6 +361,60 @@ function sendCMD($message){
 
 </body>
 
+<?php
+// Icon color change based on state
+if($bed_led1 == 1){
+echo '<script>';
+echo 'document.getElementById("Bedled1").style.color="Lime";';
+echo '</script>';
+} else {
+echo '<script>';
+echo 'document.getElementById("Bedled1").style.color="Tomato";';
+echo '</script>';	
+}
+
+if($bed_force == 1){
+echo '<script>';
+echo 'document.getElementById("BedForce").style.color="Lime";';
+echo '</script>';
+} else {
+echo '<script>';
+echo 'document.getElementById("BedForce").style.color="Tomato";';
+echo '</script>';	
+}
+
+if($chair_led1 == 1){
+echo '<script>';
+echo 'document.getElementById("Chairled1").style.color="Lime";';
+echo '</script>';
+} else {
+echo '<script>';
+echo 'document.getElementById("Chairled1").style.color="Tomato";';
+echo '</script>';	
+}
+
+if($chair_motor == 1){
+echo '<script>';
+echo 'document.getElementById("ChairMotor").style.color="Lime";';
+echo '</script>';
+} else {
+echo '<script>';
+echo 'document.getElementById("ChairMotor").style.color="Tomato";';
+echo '</script>';	
+}
+
+if($chair_force == 1){
+echo '<script>';
+echo 'document.getElementById("ChairForce").style.color="Lime";';
+echo '</script>';
+} else {
+echo '<script>';
+echo 'document.getElementById("ChairForce").style.color="Tomato";';
+echo '</script>';	
+}
+
+?>
+
 <script>
 var today = new Date();
 var hourNow = today.getHours();
@@ -387,27 +436,3 @@ document.getElementById("welcome").innerHTML = greeting;
 </script>
 
 </html>
-
-<?php
-if($bed_led1 == 1){
-echo '<script>';
-echo 'document.getElementById("Bedled1").style.color="Lime";';
-echo '</script>';
-} else {
-echo '<script>';
-echo 'document.getElementById("Bedled1").style.color="Tomato";';
-echo '</script>';	
-}
-
-
-
-if($chair_led1 == 1){
-echo '<script>';
-echo 'document.getElementById("Chairled1").style.color="Lime";';
-echo '</script>';
-} else {
-echo '<script>';
-echo 'document.getElementById("Chairled1").style.color="Tomato";';
-echo '</script>';	
-}
-?>

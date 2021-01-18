@@ -3,27 +3,29 @@
 #include <Wire.h>
 #include <Servo.h> 
 
-//wire.h definitions
+// wire.h definitions
 #define I2C_SDL D1
 #define I2C_SDA D2
 
-//servo init
+// servo init
 Servo doorServo;
 
 // Replace with your network credentials
 const char* ssid     = "WiFi_D3_GP11";
 const char* password = "GP11Wier?";
 
+// Define port for network
+#define PORT 8083
+
+// Define static IP and gateway
 IPAddress local_IP(192,168,4,13);
 IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
-//define port for network
-#define PORT 8083
-
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);
 
+// init vars
 int i = 0;
 char buffer[100];
 char outbuffer[100];
@@ -32,9 +34,14 @@ int ledstate1 = 0;
 int ledstate2 = 0;
 int doorstate = 0;
 
+
 void setup() {
   Wire.begin();
+  Serial.begin(115200);
   config_WifiConnect();
+  config_PCA9554();
+  config_MAX11647();
+  config_SocketServer();
   
   //set pin D5 as output  
   pinMode(D5, OUTPUT);
@@ -55,11 +62,16 @@ void loop() {
     i++;
   }
   i = 0;
+
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
 
   // pushbutton1 toggles led1
   pushButton1();
+
+  // pushbutton2();
+  pushButton2();  
+
   // If a new client connects,
   if (client) {
     Serial.println("New Client is connected");
@@ -237,16 +249,19 @@ void LED2_off() {
 }
 
 void Door_open() {
+  // MUST TEST ====TODO====
   doorServo.write(90);
   doorstate = 1;
 }
 
 void Door_close() {
+  // MUST TEST ====TODO====
   doorServo.write(0);
   doorstate = 0;
 }
 
 boolean Check_Door() {
+  // MUST TEST ====TODO====
   return (doorServo.read() == 0);
 }
 
@@ -271,7 +286,7 @@ boolean Check_Led2() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if(Wire.read() & 0x11) {
+  if(Wire.read() & 0x20) {
     ledstate2 = 1;
     return 1;
   } else {

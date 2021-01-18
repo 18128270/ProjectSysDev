@@ -1,39 +1,45 @@
 #include <ESP8266WiFi.h>
 #include <stdlib.h>
 #include <Wire.h>
-#include <Servo.h> 
 
-//wire.h definitions
+// wire.h definitions
 #define I2C_SDL D1
 #define I2C_SDA D2
 
 // Replace with your network credentials
-const char* ssid     = "SSID";
-const char* password = "WPA-2PSK";
+const char* ssid     = "WiFi_D3_GP11";
+const char* password = "GP11Wier?";
 
+// Define port for network
+#define PORT 8084
+
+// Define static IP and gateway
 IPAddress local_IP(192,168,4,14);
 IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
-//define port for network
-#define PORT 8084
-
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);
 
+// init vars
 int i = 0;
 char buffer[100];
 char outbuffer[100];
 
-int tijdNieuw;
-int tijdOud;
-int maxTijd = 30000;
+unsigned long tijdNieuw;
+unsigned long tijdOud;
+unsigned long maxTijd = 20000;
 
 int fridgedoorstate;
 
+
 void setup() {
   Wire.begin();
+  Serial.begin(115200);
   config_WifiConnect();
+  config_PCA9554();
+  config_MAX11647();
+  config_SocketServer();
 }
 
 void loop() {
@@ -41,15 +47,19 @@ void loop() {
     buffer[i]= '\0';
     i++;
   }
+  i = 0;
   while (i<100){
     outbuffer[i]= '\0';
     i++;
   }
+  i = 0;
+  
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
 
   //check if fridge door is open, if so note time
   if (Check_FridgeDoor() == 1 && tijdOud == tijdNieuw) {
+    // millis() = Arduino function returns time active in unsigned Long overflows after 50 days.
     tijdOud = millis();
   }
 
@@ -71,19 +81,8 @@ void loop() {
           }
           
           if(strstr(buffer,"check fridgedoor")){
-            //0 = DICHT, 1 = OPEN, 2 = TE LANG OPEN
-            fridgedoorstate = Check_FridgeDoor();
-            tijdNieuw = millis();
-            if (fridgedoorstate == 0) {
-              client.write("0");
-            } else {
-              if (tijdNieuw - tijdOud >= maxTijd) {
-                client.write("2");
-                tijdNieuw = tijdOud;
-              } else {
-                client.write("1");
-              }              
-            }
+            sprintf(outbuffer, "%d", FridgeDoorAlarm();)
+            client.write(outbuffer);
           }
           
           if(strstr(buffer,"check temp1")){
@@ -154,7 +153,7 @@ int Check_FridgeDoor() {
   Wire.write(byte(0x00));      
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
-  
+
   if(Wire.read() & 0x01) {
     return 1;
   } else { 
@@ -162,15 +161,34 @@ int Check_FridgeDoor() {
   }
 }
 
-unsigned int checkTemp1() {
+int FridgeDoorAlarm(){
+//0 = DICHT, 1 = OPEN, 2 = TE LANG OPEN
+  fridgedoorstate = Check_FridgeDoor();
+  tijdNieuw = millis();
+  if (fridgedoorstate == 0) {
+    Serial.println("fridge door closed");
+    return(0);
+  } else if (tijdNieuw - tijdOud >= maxTijd) {
+    Serial.println("fridge door open too long");
+    tijdNieuw = tijdOud;
+    return(2);
+  } else {
+    Serial.println("fridge door open");
+    return(1);
+  }              
+}
+
+int checkTemp1() {
   Wire.requestFrom(0x36, 2);
-  unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
+  int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
+  Serial.println(anin0);
   return anin0;
 }
 
-unsigned int checkTemp2() {
+int checkTemp2() {
   Wire.requestFrom(0x36, 4);
-  unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read(); 
-  unsigned int anin1 = ((Wire.read()&0x03) << 8) | Wire.read();
+  int anin0 = ((Wire.read()&0x03) << 8) | Wire.read(); 
+  int anin1 = ((Wire.read()&0x03) << 8) | Wire.read();
+  Serial.println(anin1);
   return anin1;
 }
