@@ -168,16 +168,16 @@ void config_SocketServer(){
 
 //pushbutton toggles both motor and led
 void pushButton1(){
-  if ((Check_Pushbutton1() && ledstate == 0) && (Check_Pushbutton1() && motorstate == 0)) {
+  if ((Check_Pushbutton1() && ledstate == 0) || (Check_Pushbutton1() && motorstate == 0)) {
     delay(100);
-    if((!(Check_Pushbutton1()) && ledstate == 0) && (!(Check_Pushbutton1()) && motorstate == 0)){
+    if((!(Check_Pushbutton1()) && ledstate == 0) || (!(Check_Pushbutton1()) && motorstate == 0)){
         LED1_on();
         Motor_on();
       }
     
-  } else if((Check_Pushbutton1() && ledstate == 1) && (Check_Pushbutton1() && motorstate == 1)){
+  } else if((Check_Pushbutton1() && ledstate == 1) || (Check_Pushbutton1() && motorstate == 1)){
     delay(100);
-    if((!(Check_Pushbutton1()) && ledstate == 1) && (!(Check_Pushbutton1()) && motorstate == 1)){
+    if((!(Check_Pushbutton1()) && ledstate == 1) || (!(Check_Pushbutton1()) && motorstate == 1)){
         LED1_off();
         Motor_off();
       }

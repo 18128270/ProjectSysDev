@@ -11,11 +11,15 @@
 Servo doorServo;
 
 // Replace with your network credentials
-const char* ssid     = "SSID";
-const char* password = "WPA-2PSK";
+const char* ssid     = "WiFi_D3_GP11";
+const char* password = "GP11Wier?";
+
+IPAddress local_IP(192,168,4,13);
+IPAddress gateway(192,168,4,1);
+IPAddress subnet(255,255,255,0);
 
 //define port for network
-#define PORT 8080
+#define PORT 8083
 
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);
@@ -142,6 +146,11 @@ void config_MAX11647() {
 }
 
 void config_WifiConnect(){
+  // Configures static IP address
+  if (!WiFi.config(local_IP, gateway, subnet)) {
+    Serial.println("STA Failed to configure");
+  }
+  
   Serial.print("Connecting to ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
@@ -168,19 +177,31 @@ void config_SocketServer(){
 // TODO deze knop moet nog iets doen
 void pushButton1(){
   if (Check_Pushbutton1() && /*state*/ == 0) {
-  // doe iets
-  } else { 
-  // doe iets anders
-  }
+    delay(100);
+    if(!(Check_Pushbutton1()) && /*state*/ == 0){
+        /*Functie motor*/
+      }
+    
+  } else if (Check_Pushbutton1() && /*state*/ == 1) {
+    delay(100);
+    if(!(Check_Pushbutton1()) && /*state*/ == 1){
+        /*Functie motor*/
+      }
 }
 
 // TODO deze knop moet nog iets doen
 void pushButton2(){
   if (Check_Pushbutton2() && /*state*/ == 0) {
-  // doe iets
-  } else { 
-  // doe iets anders
-  }
+    delay(100);
+    if(!(Check_Pushbutton2()) && /*state*/ == 0){
+        /*Functie motor*/
+      }
+    
+  } else if (Check_Pushbutton2() && /*state*/ == 1) {
+    delay(100);
+    if(!(Check_Pushbutton2()) && /*state*/ == 1){
+        /*Functie motor*/
+      }
 }
 
 void LED1_on() {

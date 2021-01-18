@@ -15,7 +15,7 @@ IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
 //define port for network
-#define PORT 8080
+#define PORT 8082
 
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);

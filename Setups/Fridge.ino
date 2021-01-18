@@ -11,8 +11,12 @@
 const char* ssid     = "SSID";
 const char* password = "WPA-2PSK";
 
+IPAddress local_IP(192,168,4,14);
+IPAddress gateway(192,168,4,1);
+IPAddress subnet(255,255,255,0);
+
 //define port for network
-#define PORT 8080
+#define PORT 8084
 
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);
@@ -117,6 +121,11 @@ void config_MAX11647() {
 }
 
 void config_WifiConnect(){
+  // Configures static IP address
+  if (!WiFi.config(local_IP, gateway, subnet)) {
+    Serial.println("STA Failed to configure");
+  }
+  
   Serial.print("Connecting to ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
