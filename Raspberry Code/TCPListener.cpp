@@ -69,15 +69,13 @@ int TCPListener::run()
 int TCPListener::CheckIncCommands()
 {
     // define classes with port number, ipadd, name. (name is only used for Str.find and cout)
-    WemosTunnel Bed(8080,"192.168.178.57","Bed");
-    WemosTunnel Chair(8080,"192.168.178.31","Chair");
-    WemosTunnel Column(8080,"192.168.178.32","Column");
-    WemosTunnel Door(8080,"192.168.178.33","Door");
-    WemosTunnel Fridge(8080,"192.168.178.34","Fridge");
-    WemosTunnel Tablelamp(8080,"192.168.178.35","TableLamp");
-    WemosTunnel Wall(8080,"192.168.178.36","Wall");
-
-
+    WemosTunnel Bed(8080,"192.168.4.10","Bed");
+    WemosTunnel Chair(8081,"192.168.4.11","Chair");
+    WemosTunnel Column(8082,"192.168.4.12","Column");
+    WemosTunnel Door(8083,"192.168.4.13","Door");
+    WemosTunnel Fridge(8084,"192.168.4.14","Fridge");
+    WemosTunnel Tablelamp(8085,"192.168.4.15","TableLamp");
+    WemosTunnel Wall(8086,"192.168.4.16","Wall");
 
     // First check for destination 
     // incBuffer[]convert to String for use in str.find
@@ -95,32 +93,38 @@ int TCPListener::CheckIncCommands()
     // if the command contains "bed" send command to right class.
     if (bed!=string::npos)
     {
+        str = "";
         return(Bed.sendCommand(incBuffer));
     }
     if (chair!=string::npos)
     {
+        str = "";
         return(Chair.sendCommand(incBuffer));
     }
     if (column!=string::npos)
     {
+        str = "";
         return(Column.sendCommand(incBuffer));
     }
     if (door!=string::npos)
     {
+        str = "";
         return(Door.sendCommand(incBuffer));
     }
     if (fridge!=string::npos)
     {
+        str = "";
         return(Fridge.sendCommand(incBuffer));
     }
     if (tablelamp!=string::npos)
     {
+        str = "";
         return(Tablelamp.sendCommand(incBuffer));
     }
     if (wall!=string::npos)
     {
+        str = "";
         return(Wall.sendCommand(incBuffer));
     }
-    // empty str
     str = "";
 }

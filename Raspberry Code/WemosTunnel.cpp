@@ -37,9 +37,9 @@ int WemosTunnel::sendCommand(char command[1024])
     } 
 
     // Send max 100 chars. sizeof(command)didn't work.
-    if ((sent = send(c_socket, command, 100, 0)) < 0)
+    if ((sent = send(c_socket, command, 25, 0)) < 0)
     {
-        // check for can't read bytes
+        // check for can't send bytes
         cerr << "<<< WEMOS bytes  "<< sent << "sent to : " << name << " failed." << endl;
         close(c_socket);
         exit(EXIT_FAILURE);
