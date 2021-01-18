@@ -5,12 +5,16 @@
 
 // Replace with your network credentials
 const char* ssid     = "SSID";
-const char* password = "PASSWORD";
+const char* password = "WPA2-PSK";
 
-// Set web server port number to 8181
+// Set web server port number to 8080
 WiFiServer socketServer(PORT);
 
 const int output5 = D5;
+
+char buffer[100];
+char outbuffer[100];
+int i = 0;
 
 void config_WifiConnect(){
   Serial.print("Connecting to ");
@@ -46,7 +50,17 @@ void setup() {
   config_SocketServer();
 }
 
+boolean Check_Led1(){
+  return 10;
+}
+
 void loop() {
+  
+  while (i<100){
+    buffer[i]= '\0';
+    i++;
+  }
+  i = 0;
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
 
@@ -60,29 +74,48 @@ void loop() {
       while (client.connected()) {
 
         while (client.available() > 0) {
-          //Stores buffer in string c
           char c = client.read();
-          
-          //prints c to monitor
-          Serial.write(c);
-          //writes Acknowledged back to client.
-          client.write(">>> Acknowledged");
-          
-          if(c == '0'){
+          // stores multiple chars in buffer!
+          if (i<100){
+            buffer[i] = c;  //Stores buffer in string c
+            i++;
+            buffer[i] = '\0';
+          }
+          // check the newly made string for the commands. Bunch of if statements here.
+          if(strstr(buffer,"led1 on")){
           digitalWrite(output5, HIGH);
+          client.write("ACK");
+          }
+    
+          if(strstr(buffer,"led1 off")) {
+          digitalWrite(output5, LOW);
+          client.write("ACK");
+          }
+          if(strstr(buffer,"check led1")){
+          digitalRead(output5);
+          sprintf(outbuffer, "%d" , digitalRead(output5));
+          client.write(outbuffer);
           }
           
-          if(c == '1') {
-          digitalWrite(output5, LOW);
+          if(strstr(buffer,"check pushbutton1")){
+          client.write("0");
           }
-          client.stop();
+          if(strstr(buffer,"check force")){
+          client.write("0"); 
+          }
         }
       }
-      Serial.println(" ");
+      // reset the counter to account for new commands.
+      i = 0;
+      Serial.print("Server response: ");
+      Serial.println(buffer);
       Serial.println("Client disconnected");
-      //client.stop();
-      }
+      } 
+      Serial.println("terminating");
     }
-  }
+}
+
+
+
 
   
