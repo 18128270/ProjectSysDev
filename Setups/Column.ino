@@ -7,8 +7,12 @@
 #define I2C_SDA D2
 
 // Replace with your network credentials
-const char* ssid     = "SSID";
-const char* password = "WPA-2PSK";
+const char* ssid     = "WiFi_D3_GP11";
+const char* password = "GP11Wier?";
+
+IPAddress local_IP(192,168,4,12);
+IPAddress gateway(192,168,4,1);
+IPAddress subnet(255,255,255,0);
 
 //define port for network
 #define PORT 8080
@@ -26,7 +30,11 @@ int buzzstate = 0;
 
 void setup() {
   Wire.begin();
+  Serial.begin(115200);
   config_WifiConnect();
+  config_PCA9554();
+  config_MAX11647();
+  config_SocketServer();
 }
 
 void loop() {
@@ -125,6 +133,11 @@ void config_MAX11647() {
 }
 
 void config_WifiConnect() {
+  // Configures static IP address
+  if (!WiFi.config(local_IP, gateway, subnet)) {
+      Serial.println("STA Failed to configure");
+  }
+  
   Serial.print("Connecting to ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
@@ -148,11 +161,19 @@ void config_SocketServer() {
   socketServer.begin();
 }
 
-void pushButton1() {
+void pushButton1(){
   if (Check_Pushbutton1() && ledstate == 0) {
-    LED1_on();
-  } else {
-    LED1_off();
+    delay(100);
+    if(!(Check_Pushbutton1()) && ledstate == 0){
+        LED1_on();
+      }
+    
+  } else if(Check_Pushbutton1() && ledstate == 1){
+    delay(100);
+    if(!(Check_Pushbutton1()) && ledstate == 1){
+        LED1_off();
+      }
+    
   }
 }
 

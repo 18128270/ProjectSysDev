@@ -7,8 +7,8 @@
 #define I2C_SDA D2
 
 // Replace with your network credentials
-const char* ssid     = "SSID";
-const char* password = "WPA-2PSK";
+const char* ssid     = "WiFi_D3_GP11";
+const char* password = "GP11Wier?";
 
 //define port for network
 #define PORT 8080
@@ -22,12 +22,21 @@ char outbuffer[100];
 
 int ledstate = 0;
 
+IPAddress local_IP(192,168,4,10);
+IPAddress gateway(192,168,4,1);
+IPAddress subnet(255,255,255,0);
+
 void setup() {
   Wire.begin();
+  Serial.begin(115200);
   config_WifiConnect();
+  config_PCA9554();
+  config_MAX11647();
+  config_SocketServer();
 }
 
 void loop() {
+//Check_Force();
 
   while (i<100){
     buffer[i]= '\0';
@@ -84,7 +93,7 @@ void loop() {
           }
         }
       }
-    Serial.println(" ");
+    Serial.println(buffer);
     Serial.println("Client disconnected");
     i = 0;
     }
@@ -108,6 +117,10 @@ void config_MAX11647() {
 }
 
 void config_WifiConnect(){
+  // Configures static IP address
+  if (!WiFi.config(local_IP, gateway, subnet)) {
+    Serial.println("STA Failed to configure");
+  }
   Serial.print("Connecting to ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
@@ -133,9 +146,17 @@ void config_SocketServer(){
 
 void pushButton1(){
   if (Check_Pushbutton1() && ledstate == 0) {
-    LED1_on();
-  } else {
-    LED1_off();
+    delay(100);
+    if(!(Check_Pushbutton1()) && ledstate == 0){
+        LED1_on();
+      }
+    
+  } else if(Check_Pushbutton1() && ledstate == 1){
+    delay(100);
+    if(!(Check_Pushbutton1()) && ledstate == 1){
+        LED1_off();
+      }
+    
   }
 }
 
@@ -145,6 +166,7 @@ void LED1_on() {
   Wire.write(byte(0x01<<4));
   Wire.endTransmission();
   ledstate = 1;
+  Serial.println("Led AAN");
 }
 
 void LED1_off() {
@@ -153,6 +175,7 @@ void LED1_off() {
   Wire.write(byte(0x00<<4));
   Wire.endTransmission();
   ledstate = 0;
+  Serial.println("Led UIT");
 }
 
 boolean Check_Led1() {
@@ -186,8 +209,9 @@ boolean Check_Pushbutton1() {
 boolean Check_Force() {
   Wire.requestFrom(0x36, 2);
   unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
+  //Serial.println(anin0);
 
-  if(anin0 >= 1000) {
+  if(anin0 >= 400) {
     return 1;
   } else {
     return 0;

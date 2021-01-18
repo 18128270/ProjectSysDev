@@ -7,11 +7,12 @@
 #define I2C_SDA D2
 
 // Replace with your network credentials
-const char* ssid     = "SSID";
-const char* password = "WPA-2PSK";
+const char* ssid     = "WiFi_D3_GP11";
+const char* password = "GP11Wier?";
+
 
 //define port for network
-#define PORT 8080
+#define PORT 8081
 
 // Set web server port number to 8080
 WiFiServer socketServer(PORT);
@@ -23,9 +24,18 @@ char outbuffer[100];
 int ledstate = 0;
 int motorstate = 0;
 
+  IPAddress local_IP(192,168,4,11);
+  IPAddress gateway(192,168,4,1);
+  IPAddress subnet(255,255,255,0);
+
 void setup() {
   Wire.begin();
+  Serial.begin(115200);
   config_WifiConnect();
+  config_SocketServer();
+  config_PCA9554();
+  config_MAX11647();
+  
 }
 
 void loop() {
@@ -34,10 +44,12 @@ void loop() {
     buffer[i]= '\0';
     i++;
   }
+  i = 0;
   while (i<100){
     outbuffer[i]= '\0';
     i++;
   }
+  i = 0;
   
   // Listen for incoming clients
   WiFiClient client = socketServer.available();
@@ -52,8 +64,9 @@ void loop() {
     if (client) {
 
      while (client.connected()) {
-
+       
         while (client.available() > 0) {
+          
           //Stores buffer in string c
           char c = client.read();
           if (i<100){
@@ -99,7 +112,7 @@ void loop() {
           }
         }
       }
-    Serial.println(" ");
+    Serial.println(buffer);
     Serial.println("Client disconnected");
     i = 0;
     }
@@ -112,6 +125,7 @@ void config_PCA9554() {
   Wire.write(byte(0x03));
   Wire.write(byte(0x0F));
   Wire.endTransmission();
+  Serial.println("Config PCA started");
 }
 
 void config_MAX11647() {
@@ -119,10 +133,16 @@ void config_MAX11647() {
   Wire.beginTransmission(0x36);
   Wire.write(byte(0xA2));          
   Wire.write(byte(0x03));
-  Wire.endTransmission(); 
+  Wire.endTransmission();
+  Serial.println("Config MAX started"); 
 }
 
 void config_WifiConnect(){
+
+if (!WiFi.config(local_IP, gateway, subnet)) {
+    Serial.println("STA Failed to configure");
+  }
+  
   Serial.print("Connecting to ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
@@ -147,18 +167,21 @@ void config_SocketServer(){
 }
 
 //pushbutton toggles both motor and led
-void pushButton1() {
-  if Check_Pushbutton1() {
-    if ledstate == 0 {
-      LED1_on();
-    }else{
-      LED1_off();
-    }
-    if motorstate == 0 {
-      Motor_on();
-    } else {
-      Motor_off();
-    }
+void pushButton1(){
+  if ((Check_Pushbutton1() && ledstate == 0) && (Check_Pushbutton1() && motorstate == 0)) {
+    delay(100);
+    if((!(Check_Pushbutton1()) && ledstate == 0) && (!(Check_Pushbutton1()) && motorstate == 0)){
+        LED1_on();
+        Motor_on();
+      }
+    
+  } else if((Check_Pushbutton1() && ledstate == 1) && (Check_Pushbutton1() && motorstate == 1)){
+    delay(100);
+    if((!(Check_Pushbutton1()) && ledstate == 1) && (!(Check_Pushbutton1()) && motorstate == 1)){
+        LED1_off();
+        Motor_off();
+      }
+    
   }
 }
 
@@ -169,6 +192,7 @@ void LED1_on() {
   Wire.write(byte(0x01<<4));
   Wire.endTransmission();
   ledstate = 1;
+  Serial.println("Led AAN");
 }
 
 void LED1_off() {
@@ -177,15 +201,17 @@ void LED1_off() {
   Wire.write(byte(0x00<<4));
   Wire.endTransmission();
   ledstate = 0;
+  Serial.println("Led UIT");
 }
 
 // TODO:PWM for motor needs to be implemented this doens't work
 void Motor_on() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x01));
-  Wire.write(byte(0x01<<5));
+  Wire.write(byte(0x01<<5)); // D05
   Wire.endTransmission();
   motorstate = 1;
+  Serial.println("Motor AAN");
 }
 
 void Motor_off() {
@@ -194,6 +220,7 @@ void Motor_off() {
   Wire.write(byte(0x00<<5));
   Wire.endTransmission();
   motorstate = 0;
+  Serial.println("Motor UIT");
 }
 
 boolean Check_Led1() {
@@ -202,12 +229,14 @@ boolean Check_Led1() {
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if(Wire.read() & 0x10) {
-    return 1;
+  if(Wire.read() & 0x10) { //Check output DO4
     ledstate = 1;
+    return 1;
+    
   } else {
-    return 0;
     ledstate = 0;
+    return 0;
+    
   }
 }
 
@@ -217,12 +246,14 @@ boolean Check_Motor(){
   Wire.endTransmission();
   Wire.requestFrom(0x38, 1);
   
-  if(Wire.read() & 0x11) { //Check output DO5
-    return 1;
+  if(Wire.read() & 0x20) { //Check output DO5
     motorstate = 1;
+    return 1;
+    
   } else {
-    return 0;
     motorstate = 0;
+    return 0;
+    
   }
 }
 
@@ -243,7 +274,7 @@ boolean Check_Force() {
   Wire.requestFrom(0x36, 2);
   unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
 
-  if(anin0 >= 1000) {
+  if(anin0 >= 400) {
     return 1;
   } else {
     return 0;
