@@ -54,7 +54,6 @@ function RefreshDoor(){
     $door_led2 = sendCMD("Door check led2");
 }
 function RefreshFridge(){
-    $fridge_door = sendCMD("Fridge check fridgedoor");
     $fridge_temp1 = sendCMD("Fridge check temp1");
     $fridge_temp2 = sendCMD("Fridge check temp2");
 }
@@ -476,6 +475,7 @@ if($column_buzzer == 1){
 if($column_co2 == 1){
     echo '<script>';
     echo 'document.getElementById("Columnco2").style.color="Lime";';
+    echo 'alert("shits on fire yo")';
     echo '</script>';
     } else {
     echo '<script>';
@@ -513,6 +513,13 @@ if($door_door == 1){
     echo '</script>';
 }
 
+if($fridge_door == 2){
+    echo '<script>';
+    echo 'document.getElementById("Fridgedoor").style.color="Lime";';
+    echo 'alert("Your fridge door is open too damn long")';
+    echo '</script>';
+}
+
 if($fridge_door == 1){
     echo '<script>';
     echo 'document.getElementById("Fridgedoor").style.color="Lime";';
@@ -522,7 +529,7 @@ if($fridge_door == 1){
     echo 'document.getElementById("Fridgedoor").style.color="Tomato";';
     echo '</script>';
 }
- 
+
 if($tablelamp_led1 == 1){
     echo '<script>';
     echo 'document.getElementById("Lampled1").style.color="Lime";';
@@ -583,6 +590,7 @@ if($wall_lcd == 1){
     }
 
     document.getElementById("welcome").innerHTML = greeting;
+
 </script>
 
 </html>
