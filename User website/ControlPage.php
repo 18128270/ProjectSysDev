@@ -1,10 +1,15 @@
-==== ControlPage ====
-
-(Check functions & door open/close & buzzer off )
-
-
 <?php 
 header("Refresh: 60");
+
+if (isset($_GET["column_buzzer_on"])) { $column_buzzer = 1; echo "\n Reply From Server :".sendCMD("Column buzzer on");  }
+if (isset($_GET["column_buzzer_off"])) { $column_buzzer = 0; echo "\n Reply From Server :".sendCMD("Chair buzzer off");  }
+
+if (isset($_GET["door_door_open"])) { echo "\n Reply From Server :".sendCMD("Door door open"); }
+if (isset($_GET["door_door_close"])) { echo "\n Reply From Server :".sendCMD("Door door close"); }
+
+if (isset($_GET["wall_lcd_on"])) { echo "\n Reply From Server :".sendCMD("Wall lcd on"); }
+if (isset($_GET["wall_lcd_off"])) { echo "\n Reply From Server :".sendCMD("Wall lcd off"); }
+
 //Hieronder de refreshes
 
 function RefreshBed(){
@@ -149,12 +154,12 @@ function sendCMD($message){
                             <td><p> <i id="Columnbuzzer" class="fas fa-volume-up"</p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" name="column_pushbutton1_on" class="btn-block btn-sm btn-info">Turn buzzer on</button>
+                                <button type="submit" name="column_buzzer_on" class="btn-block btn-sm btn-info">Turn buzzer on</button>
                                 </form>
                             </td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" name="column_pushbutton1_off" class="btn-block btn-sm btn-info">Turn buzzer off</button>
+                                <button type="submit" name="column_buzzer_off" class="btn-block btn-sm btn-info">Turn buzzer off</button>
                                 </form>
                             </td>
                         </tr>
@@ -214,7 +219,7 @@ function sendCMD($message){
                     <table>
                         <tr>
                             <td><p>Sensor:</p></td>
-                            <td><p><?php echo $tablelamp_sensor; ?></p></td>
+                            <td><p> <i id="Lampsensor" class="fas fa-exclamation-circle" style="color:gray"></i> </p></td>
                         </tr>
                     </table>
                 </section>
@@ -226,15 +231,15 @@ function sendCMD($message){
                     <table>
                         <tr>
                             <td><p>Blinds:</p></td>
-                            <td><p> <i id="Walllcd" class="fas fa-lightbulb" style="color:gray"></i> </p></td>
+                            <td><p> <i id="Walllcd" class="fas fa-person-booth" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" name="wall_lcd_on" class="btn-block btn-sm btn-info">Turn LCD on</button>
+                                <button type="submit" name="wall_lcd_on" class="btn-block btn-sm btn-info">Close blinds</button>
                                 </form>
                             </td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" name="wall_lcd_off" class="btn-block btn-sm btn-info">Turn LCD off</button>
+                                <button type="submit" name="wall_lcd_off" class="btn-block btn-sm btn-info">Open blinds</button>
                                 </form>
                             </td>
                         </tr>
@@ -255,45 +260,106 @@ function sendCMD($message){
 // Icon color change based on state
 
 if($bed_force == 1){
-echo '<script>';
-echo 'document.getElementById("BedForce").style.color="Lime";';
-echo '</script>';
-} else {
-echo '<script>';
-echo 'document.getElementById("BedForce").style.color="Tomato";';
-echo '</script>';	
+    echo '<script>';
+    echo 'document.getElementById("BedForce").style.color="Lime";';
+    echo '</script>';
+    } else {
+    echo '<script>';
+    echo 'document.getElementById("BedForce").style.color="Tomato";';
+    echo '</script>';	
 }
 
 if($chair_force == 1){
-echo '<script>';
-echo 'document.getElementById("ChairForce").style.color="Lime";';
-echo '</script>';
-} else {
-echo '<script>';
-echo 'document.getElementById("ChairForce").style.color="Tomato";';
-echo '</script>';	
+    echo '<script>';
+    echo 'document.getElementById("ChairForce").style.color="Lime";';
+    echo '</script>';
+    } else {
+    echo '<script>';
+    echo 'document.getElementById("ChairForce").style.color="Tomato";';
+    echo '</script>';	
 }
+
+if($column_buzzer == 1){
+    echo '<script>';
+    echo 'document.getElementById("Columnbuzzer").style.color="Lime";';
+    echo '</script>';
+    } else {
+    echo '<script>';
+    echo 'document.getElementById("Columnbuzzer").style.color="Tomato";';
+    echo '</script>';
+}
+
+if($column_co2 == 1){
+    echo '<script>';
+    echo 'document.getElementById("Columnco2").style.color="Lime";';
+    echo '</script>';
+    } else {
+    echo '<script>';
+    echo 'document.getElementById("Columnco2").style.color="Tomato";';
+    echo '</script>';
+}
+
+if($door_door == 1){
+    echo '<script>';
+    echo 'document.getElementById("Doordoor").style.color="Lime";';
+    echo '</script>';
+    } else {
+    echo '<script>';
+    echo 'document.getElementById("Doordoor").style.color="Tomato";';
+    echo '</script>';
+}
+
+if($fridge_door == 1){
+    echo '<script>';
+    echo 'document.getElementById("Fridgedoor").style.color="Lime";';
+    echo '</script>';
+    } else {
+    echo '<script>';
+    echo 'document.getElementById("Fridgedoor").style.color="Tomato";';
+    echo '</script>';
+}
+
+if($tablelamp_sensor == 1){
+    echo '<script>';
+    echo 'document.getElementById("Lampsensor").style.color="Lime";';
+    echo '</script>';
+    } else {
+    echo '<script>';
+    echo 'document.getElementById("Lampsensor").style.color="Tomato";';
+    echo '</script>';
+}
+
+if($wall_lcd == 1){
+    echo '<script>';
+    echo 'document.getElementById("Walllcd").style.color="Lime";';
+    echo '</script>';
+    } else {
+    echo '<script>';
+    echo 'document.getElementById("Walllcd").style.color="Tomato";';
+    echo '</script>';
+}
+
 
 ?>
 
 <script>
-var today = new Date();
-var hourNow = today.getHours();
-var greeting;
-if(hourNow > 8){
-	greeting = "Good morning nurse";
-}
-if(hourNow>12){
-	greeting = "Good afternoon nurse";
-}
-if(hourNow>18){
-	greeting = "Good evening nurse";
-}
-if(hourNow<8){
-	greeting = "Good night nurse";
-}
+    var today = new Date();
+    var hourNow = today.getHours();
+    var greeting;
+    if(hourNow > 8){
+	    greeting = "Good morning Nurse";
+    }
+    if(hourNow>12){
+	    greeting = "Good afternoon Nurse";
+    }
+    if(hourNow>18){
+	    greeting = "Good evening Nurse";
+    }
+    if(hourNow<8){
+	    greeting = "Good night Nurse";
+    }
 
-document.getElementById("welcome").innerHTML = greeting;
+    document.getElementById("welcome").innerHTML = greeting;
 </script>
 
 </html>
