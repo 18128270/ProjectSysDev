@@ -18,7 +18,7 @@ IPAddress local_IP(192,168,4,14);
 IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
-// Set web server port number to 8080
+// Set web server port number to PORT
 WiFiServer socketServer(PORT);
 
 // init vars
@@ -81,7 +81,7 @@ void loop() {
           }
           
           if(strstr(buffer,"check fridgedoor")){
-            sprintf(outbuffer, "%d", FridgeDoorAlarm();)
+            sprintf(outbuffer, "%d", FridgeDoorAlarm());
             client.write(outbuffer);
           }
           
@@ -90,7 +90,7 @@ void loop() {
             client.write(outbuffer);
           }
           
-          if(strstr(buffer,"check temp1")){
+          if(strstr(buffer,"check temp2")){
             sprintf(outbuffer, "%d", checkTemp2());
             client.write(outbuffer);
           }
@@ -155,9 +155,10 @@ int Check_FridgeDoor() {
   Wire.requestFrom(0x38, 1);
 
   if(Wire.read() & 0x01) {
-    return 1;
+    tijdNieuw = tijdOud; 
+    return 0;
   } else { 
-    return 0; 
+    return 1; 
   }
 }
 

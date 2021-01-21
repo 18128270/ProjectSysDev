@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <stdlib.h>
 #include <Wire.h>
-#include <Servo.h> 
+#include <Servo.h>
 
 // wire.h definitions
 #define I2C_SDL D1
@@ -22,7 +22,7 @@ IPAddress local_IP(192,168,4,13);
 IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
-// Set web server port number to 8080
+// Set web server port number to PORT
 WiFiServer socketServer(PORT);
 
 // init vars
@@ -42,12 +42,11 @@ void setup() {
   config_PCA9554();
   config_MAX11647();
   config_SocketServer();
-  
-  //set pin D5 as output  
-  pinMode(D5, OUTPUT);
 
-  //set servo port to D5
+  // set servo port to D5
   doorServo.attach(D5);
+  // set door closed
+  doorServo.write(83);
 }
 
 void loop() {
@@ -188,31 +187,31 @@ void config_SocketServer(){
 
 // TODO deze knop moet nog iets doen
 void pushButton1(){
-  if (Check_Pushbutton1() && /*state*/ == 0) {
+  if (Check_Pushbutton1() && doorstate == 0) {
     delay(100);
-    if(!(Check_Pushbutton1()) && /*state*/ == 0){
-        /*Functie motor*/
+    if(!(Check_Pushbutton1()) && doorstate == 0){
+        Door_close();
       }
     
-  } else if (Check_Pushbutton1() && /*state*/ == 1) {
+  } else if (Check_Pushbutton1() && doorstate == 1) {
     delay(100);
-    if(!(Check_Pushbutton1()) && /*state*/ == 1){
-        /*Functie motor*/
+    if(!(Check_Pushbutton1()) && doorstate == 1){
+        Door_open();
       }
 }
 
 // TODO deze knop moet nog iets doen
 void pushButton2(){
-  if (Check_Pushbutton2() && /*state*/ == 0) {
+  if (Check_Pushbutton2() && doorstate == 0) {
     delay(100);
-    if(!(Check_Pushbutton2()) && /*state*/ == 0){
-        /*Functie motor*/
+    if(!(Check_Pushbutton2()) && doorstate == 0){
+        Door_open();
       }
     
-  } else if (Check_Pushbutton2() && /*state*/ == 1) {
+  } else if (Check_Pushbutton2() && doorstate == 1) {
     delay(100);
-    if(!(Check_Pushbutton2()) && /*state*/ == 1){
-        /*Functie motor*/
+    if(!(Check_Pushbutton2()) && doorstate == 1){
+        Door_close();
       }
 }
 
@@ -249,20 +248,22 @@ void LED2_off() {
 }
 
 void Door_open() {
-  // MUST TEST ====TODO====
-  doorServo.write(90);
+  doorServo.write(243);
   doorstate = 1;
 }
 
-void Door_close() {
-  // MUST TEST ====TODO====
-  doorServo.write(0);
+void Door_close() { 
+  doorServo.write(83);
   doorstate = 0;
 }
 
 boolean Check_Door() {
-  // MUST TEST ====TODO====
-  return (doorServo.read() == 0);
+  if (doorServo.read()==83){
+    doorstate = 0;
+  } else {
+    doorstate = 1;
+  }
+  return (doorstate);
 }
 
 boolean Check_Led1() {

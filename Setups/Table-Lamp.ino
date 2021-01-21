@@ -179,12 +179,15 @@ void LedAutoOff(){
 }
 
 void LED1_on() {
-  digitalWrite(D5, HIGH);
+  fill_solid( &(leds[0]), 1, CRGB(250, 0, 0));
+  FastLED.setBrightness(BRIGHTNESS);
+  FastLED.show();
   ledstate = 1;
 }
 
 void LED1_off() {
-  digitalWrite(D5, LOW);
+  FastLED.setBrightness(0);
+  FastLED.show();
   ledstate = 0;
 }
 

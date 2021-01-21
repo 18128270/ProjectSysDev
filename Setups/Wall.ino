@@ -28,7 +28,7 @@ WiFiServer socketServer(PORT);
 #define DATA_PIN    D5      // LED data pin
 #define BRIGHTNESS  200     // Brightness range [OFF..ON] = [0..255]
 
-CRGB leds[NUM_LEDS]
+CRGB leds[NUM_LEDS];
 
 // init vars
 int i = 0;
@@ -89,11 +89,13 @@ void loop() {
           }
 
           if(strstr(buffer,"lcd on")){
-            client.write(LCD_panel_on());
+            LCD_panel_on();
+            client.write("ACK");
           }
 
           if(strstr(buffer,"lcd off")){
-            client.write(LCD_panel_off());
+            LCD_panel_off();
+            client.write("ACK");
           }
           
           if(strstr(buffer,"led1 on")){
@@ -191,17 +193,20 @@ void LCD_panel_off() {
 }
 
 void LED1_on() {
-  digitalWrite(D5, HIGH);
+  fill_solid( &(leds[0]), 3, CRGB(250, 0, 0));
+  FastLED.setBrightness(BRIGHTNESS);
+  FastLED.show();
   ledstate = 1;
 }
 
 void LED1_off() {
-  digitalWrite(D5, LOW);
+  FastLED.setBrightness(0);
+  FastLED.show();
   ledstate = 0;
 }
 
 boolean Check_Led1(){
-  return digitalRead(D5);
+  return (ledstate);
 }
 
 boolean Check_LCD(){
@@ -219,33 +224,51 @@ boolean Check_LCD(){
 }
 
 void SetColour(){
-  if (Check_Potentiometer() < 341){
-    color = Check_Potentiometer() % 256
-    int R = color;
-    int G = 0;
-    int B = 0;
+  int val = Check_Potentiometer();
+  int R;
+  int G;
+  int B;
+
+  if (val < 341) {
+    color = val % 341;
+    if (color>255){
+      color = 255;
+    }
+    color = val
+    R = color;
+    G = 0;
+    B = 0;
   }
-  if (341 >= Check_Potentiometer() < 1024){
-    color = Check_Potentiometer() % 256
-    int R = 0;
-    int G = color;
-    int B = 0;
+  if (341 >= val < 682) {
+    color = val % 341;
+    if (color>255){
+      color = 255;
+    }
+    R = 0;
+    G = color;
+    B = 0;
   }
-  if (Check_Potentiometer() >= 1024){
-    color = Check_Potentiometer() % 256 
-    int R = 0;
-    int G = 0;
-    int B = color;
+  if (val >= 682) {
+    color = val % 341;
+    if (color>255){
+      color = 255;
+    }
+    R = 0;
+    G = 0;
+    B = color;
   }
   fill_solid( &(Leds[0]), 3 /*number of leds*/, CRGB(R, G, B));
-  // Send settings to D5 (ARGB LEDS)
   FastLED.show();
 }
 
 int Check_LDR() {
   Wire.requestFrom(0x36, 2);
   int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
-  Serial.println(anin0);
+  if(anin0>600){
+    LCD_panel_on();
+  }else{
+    LCD_panel_off();
+  }
   return anin0;
 }
 
@@ -253,6 +276,5 @@ int Check_Potentiometer() {
   Wire.requestFrom(0x36, 4);
   int anin0 = ((Wire.read()&0x03) << 8) | Wire.read(); 
   int anin1 = ((Wire.read()&0x03) << 8) | Wire.read();
-  Serial.println(anin1);
   return anin1;
 }

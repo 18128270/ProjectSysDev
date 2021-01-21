@@ -18,7 +18,7 @@ IPAddress local_IP(192,168,4,12);
 IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
-// Set web server port number to 8080
+// Set web server port number to PORT
 WiFiServer socketServer(PORT);
 
 // init vars
@@ -77,26 +77,22 @@ void loop() {
           
           if(strstr(buffer,"led1 on")){
             LED1_on();
-            sprintf(outbuffer, "%d", LED1_on());
-            client.write(outbuffer);
+            client.write("ACK");
           }
           
           if(strstr(buffer,"led1 off")){
             LED1_off();
-            sprintf(outbuffer, "%d", LED1_off());
-            client.write(outbuffer);
+            client.write("ACK");
           }
           
           if(strstr(buffer,"buzzer on")){
             Buzzer_on();
-            sprintf(outbuffer, "%d", Buzzer_on());
-            client.write(outbuffer);
+            client.write("ACK");
           }
           
           if(strstr(buffer,"buzzer off")){
             Buzzer_off();
-            sprintf(outbuffer, "%d", Buzzer_off());
-            client.write(outbuffer);
+            client.write("ACK");
           }
 
           if(strstr(buffer,"check led1")){
@@ -204,7 +200,7 @@ void Buzzer_on() {
   buzzstate = 1;
 }
 
-void buzzer_off() {
+void Buzzer_off() {
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x01));
   Wire.write(byte(0x00<<4));
@@ -241,7 +237,7 @@ boolean Check_Pushbutton1() {
 unsigned int Check_CO2(){
   Wire.requestFrom(0x36, 2);
   unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
-  if(anin0 >= 1000) {
+  if(anin0 >= 10000) {
     Buzzer_on();
     return 1;
   } else {
