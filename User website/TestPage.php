@@ -12,7 +12,7 @@ if (isset($_GET["chair_motor_off"])) { echo "\n Reply From Server :".sendCMD("Ch
 if (isset($_GET["column_led1_on"])) { echo "\n Reply From Server :".sendCMD("Column led1 on"); }
 if (isset($_GET["column_led1_off"])) { echo "\n Reply From Server :".sendCMD("Column led1 off"); }
 if (isset($_GET["column_buzzer_on"])) { $column_buzzer = 1; echo "\n Reply From Server :".sendCMD("Column buzzer on");  }
-if (isset($_GET["column_buzzer_off"])) { $column_buzzer = 0; echo "\n Reply From Server :".sendCMD("Chair buzzer off");  }
+if (isset($_GET["column_buzzer_off"])) { $column_buzzer = 0; echo "\n Reply From Server :".sendCMD("Column buzzer off");  }
 
 if (isset($_GET["door_led1_on"])) { echo "\n Reply From Server :".sendCMD("Door led1 on"); }
 if (isset($_GET["door_led1_off"])) { echo "\n Reply From Server :".sendCMD("Door led1 off"); }
@@ -21,8 +21,8 @@ if (isset($_GET["door_led2_off"])) { echo "\n Reply From Server :".sendCMD("Door
 if (isset($_GET["door_door_open"])) { echo "\n Reply From Server :".sendCMD("Door door open"); }
 if (isset($_GET["door_door_close"])) { echo "\n Reply From Server :".sendCMD("Door door close"); }
 
-if (isset($_GET["tablelamp_led1_on"])) { echo "\n Reply From Server :".sendCMD("Tablelamp led1 on"); }
-if (isset($_GET["tablelamp_led1_off"])) { echo "\n Reply From Server :".sendCMD("Tablelamp led1 off"); }
+if (isset($_GET["tablelamp_led1_on"])) { echo "\n Reply From Server :".sendCMD("TableLamp led1 on"); }
+if (isset($_GET["tablelamp_led1_off"])) { echo "\n Reply From Server :".sendCMD("TableLamp led1 off"); }
 
 if (isset($_GET["wall_led1_on"])) { echo "\n Reply From Server :".sendCMD("Wall led1 on"); }
 if (isset($_GET["wall_led1_off"])) { echo "\n Reply From Server :".sendCMD("Wall led1 off"); }
@@ -31,54 +31,32 @@ if (isset($_GET["wall_lcd_off"])) { echo "\n Reply From Server :".sendCMD("Wall 
 
 //Hieronder de refreshes
 
-function RefreshBed(){
+/*
     $bed_led1 = sendCMD("Bed check led1");
     $bed_force = sendCMD("Bed check force"); 
-}
 
-function RefreshChair(){
+
     $chair_led1 = sendCMD("Chair check led1");
     $chair_motor = sendCMD("Chair check motor");
     $chair_force = sendCMD("Chair check force");
 
-}
-
-function RefreshColumn(){
     $column_led1 = sendCMD("Column check led1");
     $column_co2 = sendCMD("Column check co2");
-}
 
-function RefreshDoor(){
     $door_door = sendCMD("Door check door");
     $door_led1 = sendCMD("Door check led1");
     $door_led2 = sendCMD("Door check led2");
-}
-function RefreshFridge(){
+
     $fridge_temp1 = sendCMD("Fridge check temp1");
     $fridge_temp2 = sendCMD("Fridge check temp2");
-}
+    $fridge_door = sendCMD("Fridge check fridgedoor");
 
-function RefreshTablelamp(){
-    $tablelamp_led1 = sendCMD("Tablelamp check led1");
-    $tablelamp_sensor = sendCMD("Tablelamp check sensor");
-}
+    $tablelamp_led1 = sendCMD("TableLamp check led1");
+    $tablelamp_sensor = sendCMD("TableLamp check sensor");
 
-function RefreshWall(){
     $wall_lcd = sendCMD("Wall check lcd");
-    $wall_ldr = sendCMD("Wall check ldr");
     $wall_led1 = sendCMD("Wall check led1");
-}
-
-/*
-RefreshBed();
-RefreshChair();
-RefreshColumn();
-RefreshDoor();
-RefreshFridge();
-RefreshTablelamp();
-RefreshWall();
 */
-
 
 ?>
 
@@ -247,8 +225,8 @@ function sendCMD($message){
                         </tr>
                         <tr>
                             <td><p>CO2:</p></td>
-			                <td><p> <i id="Columnco2" class="fas fa-exclamation-triangle" ></i> </p></td>
-                            <td><p><?php echo $column_co2; ?></p></td>
+			    <td><p> <i id="Columnco2" class="fas fa-exclamation-triangle" ></i> </p></td>
+                            
                         </tr>
                     </table>
                 </section>
@@ -383,22 +361,12 @@ function sendCMD($message){
                                 </form>
                             </td>
                         </tr>
-                        <tr>
-                            <td><p>LDR:</p></td>
-                            <td><p><?php echo $wall_ldr; ?></p></td>
-                        </tr>
-                        <tr>
-                            <td><p>Potentiometer:</p></td>
-                            <td><p><?php echo $wall_potentiometer; ?></p></td>
-                        </tr>
                     </table>
                 </section>
             </div>
 
         </div>
     </div>
-
-</body>
 
 <?php
 // Icon color change based on state
@@ -515,7 +483,9 @@ if($door_door == 1){
 
 if($fridge_door == 2){
     echo '<script>';
-    echo 'document.getElementById("Fridgedoor").style.color="Lime";';
+    echo 'document.getElementById("Fridgedoor").style.color="Orange";';
+    echo '</script>';
+    echo '<script>';
     echo 'alert("Your fridge door is open too damn long")';
     echo '</script>';
 }
@@ -592,6 +562,6 @@ if($wall_lcd == 1){
     document.getElementById("welcome").innerHTML = greeting;
 
 </script>
-
+</body>
 </html>
 
