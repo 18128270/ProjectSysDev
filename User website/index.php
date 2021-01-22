@@ -63,7 +63,7 @@
 
 	        <div class="col-lg-6">
                 <section>
-                    <h2>Go to the TestPage</h2>
+                    <h2>Go to the Test Page</h2>
                     <table>
                         <form action="/TestPage.php">
                             <button type="submit" class="btn-block btn-sm btn-info">Go to Test Page</button>
@@ -71,18 +71,13 @@
                     </table>
                 </section>
             </div>
-           
-            <div class="col-lg-6">
+	    
+	        <div class="container" style="margin-bottom: 5em;">
+                <h1>About us: </h>
                 <section>
-                    <h2>Hello my name is Peter!</h2>
-                    <table>
-                        <img src="Peter_is_Here.jpg" alt="Italian Trulli">
-                    </table>
+		            <img src="Peter_is_Here.jpg" alt="Italian Trulli">
                 </section>
             </div>
-            </div>
-        <div class="container" style="margin-bottom: 5em;">
-            <h1>About us section</h>
         </div>
     </div>
 </body>

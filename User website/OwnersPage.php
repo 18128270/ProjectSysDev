@@ -30,51 +30,28 @@ if (isset($_GET["wall_lcd_on"])) { echo "\n Reply From Server :".sendCMD("Wall l
 if (isset($_GET["wall_lcd_off"])) { echo "\n Reply From Server :".sendCMD("Wall lcd off"); }
 
 //Hieronder de refreshes
+/*
 
-function RefreshBed(){
     $bed_led1 = sendCMD("Bed check led1");
-}
 
-function RefreshChair(){
     $chair_led1 = sendCMD("Chair check led1");
     $chair_motor = sendCMD("Chair check motor");
-}
 
-function RefreshColumn(){
     $column_led1 = sendCMD("Column check led1");
     $column_buzzer = sendCMD("Column check co2");
     $column_co2 = sendCMD("Column check co2");
-}
 
-function RefreshDoor(){
     $door_door = sendCMD("Door check door");
     $door_led1 = sendCMD("Door check led1");
     $door_led2 = sendCMD("Door check led2");
-}
 
-function RefreshFridge(){
     $fridge_door = sendCMD("Fridge check fridgedoor");
-}
 
-function RefreshTablelamp(){
     $tablelamp_led1 = sendCMD("Tablelamp check led1");
-}
 
-function RefreshWall(){
     $wall_lcd = sendCMD("Wall check lcd");
     $wall_led1 = sendCMD("Wall check led1");
-}
-
-/*
-RefreshBed();
-RefreshChair();
-RefreshColumn();
-RefreshDoor();
-RefreshFridge();
-RefreshTablelamp();
-RefreshWall();
 */
-
 
 ?>
 
@@ -348,12 +325,12 @@ function sendCMD($message){
                             <td><p> <i id="Walllcd" class="fas fa-person-booth" style="color:gray"></i> </p></td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" name="wall_lcd_on" class="btn-block btn-sm btn-info">Close blinds</button>
+                                <button type="submit" name="wall_lcd_on" class="btn-block btn-sm btn-info">Open blinds</button>
                                 </form>
                             </td>
                             <td>
                                 <form action="" method="get">
-                                <button type="submit" name="wall_lcd_off" class="btn-block btn-sm btn-info">Open blinds</button>
+                                <button type="submit" name="wall_lcd_off" class="btn-block btn-sm btn-info">Close blinds</button>
                                 </form>
                             </td>
                         </tr>
@@ -374,7 +351,7 @@ if($bed_led1 == 1){
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("Bedled1").style.color="Tomato";';
+    echo 'document.getElementById("Bedled1").style.color="Grey";';
     echo '</script>';	
 }
 
@@ -384,7 +361,7 @@ if($chair_led1 == 1){
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("Chairled1").style.color="Tomato";';
+    echo 'document.getElementById("Chairled1").style.color="Grey";';
     echo '</script>';	
 }
 
@@ -394,7 +371,7 @@ if($chair_motor == 1){
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("ChairMotor").style.color="Tomato";';
+    echo 'document.getElementById("ChairMotor").style.color="Grey";';
     echo '</script>';	
 }
 
@@ -404,27 +381,30 @@ if($column_led1 == 1){
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("Columnled1").style.color="Tomato";';
+    echo 'document.getElementById("Columnled1").style.color="Grey";';
     echo '</script>';
 }
 
 if($column_buzzer == 1){
     echo '<script>';
-    echo 'document.getElementById("Columnbuzzer").style.color="Lime";';
+    echo 'document.getElementById("Columnbuzzer").style.color="Tomato";';
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("Columnbuzzer").style.color="Tomato";';
+    echo 'document.getElementById("Columnbuzzer").style.color="Grey";';
     echo '</script>';
 }
 
 if($column_co2 == 1){
     echo '<script>';
-    echo 'document.getElementById("Columnco2").style.color="Lime";';
+    echo 'document.getElementById("Columnco2").style.color="Tomato";';
+    echo '</script>';
+    echo '<script>';
+    echo 'alert("shits on fire yo")';
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("Columnco2").style.color="Tomato";';
+    echo 'document.getElementById("Columnco2").style.color="Grey";';
     echo '</script>';
 }
 
@@ -434,7 +414,7 @@ if($door_led1 == 1){
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("Doorled1").style.color="Tomato";';
+    echo 'document.getElementById("Doorled1").style.color="Grey";';
     echo '</script>';
 }
 
@@ -444,27 +424,36 @@ if($door_led2 == 1){
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("Doorled2").style.color="Tomato";';
+    echo 'document.getElementById("Doorled2").style.color="Grey";';
     echo '</script>';
 }
 
 if($door_door == 1){
     echo '<script>';
-    echo 'document.getElementById("Doordoor").style.color="Lime";';
+    echo 'document.getElementById("Doordoor").style.color="Orange";';
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("Doordoor").style.color="Tomato";';
+    echo 'document.getElementById("Doordoor").style.color="Grey";';
     echo '</script>';
 }
 
 if($fridge_door == 1){
     echo '<script>';
-    echo 'document.getElementById("Fridgedoor").style.color="Lime";';
+    echo 'document.getElementById("Fridgedoor").style.color="Orange";';
     echo '</script>';
     } else {
     echo '<script>';
+    echo 'document.getElementById("Fridgedoor").style.color="Grey";';
+    echo '</script>';
+}
+
+if($fridge_door == 2){
+    echo '<script>';
     echo 'document.getElementById("Fridgedoor").style.color="Tomato";';
+    echo '</script>';
+    echo '<script>';
+    echo 'alert("Your fridge door is open too damn long")';
     echo '</script>';
 }
  
@@ -474,7 +463,7 @@ if($tablelamp_led1 == 1){
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("Lampled1").style.color="Tomato";';
+    echo 'document.getElementById("Lampled1").style.color="Grey";';
     echo '</script>';
 }
 
@@ -484,7 +473,7 @@ if($wall_led1 == 1){
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("Wallled1").style.color="Tomato";';
+    echo 'document.getElementById("Wallled1").style.color="Grey";';
     echo '</script>';
 }
 
@@ -494,7 +483,7 @@ if($wall_lcd == 1){
     echo '</script>';
     } else {
     echo '<script>';
-    echo 'document.getElementById("Walllcd").style.color="Tomato";';
+    echo 'document.getElementById("Walllcd").style.color="Grey";';
     echo '</script>';
 }
 ?>
