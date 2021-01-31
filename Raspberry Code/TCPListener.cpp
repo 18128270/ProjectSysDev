@@ -136,7 +136,8 @@ int TCPListener::CheckIncCommands()
     //     return(Wall.sendCommand(incBuffer));
     // }
 
-    // alternatieve manier, nog niet getest:
+    string str(incBuffer);
+
     for (int i = 0; i < list.size()-1; i++) {
         if(str.find((size_t)list.at(i).name) != string::npos) {
             str = "";
