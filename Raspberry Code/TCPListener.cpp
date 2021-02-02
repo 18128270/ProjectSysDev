@@ -1,6 +1,6 @@
 #include "TCPListener.h"
 #include "WemosTunnel.h"
-
+#include <vector>
 
 int TCPListener::init() 
 {
@@ -56,6 +56,14 @@ int TCPListener::run()
     // cool int to string convert to be able to use send().
     val = CheckIncCommands();
     sprintf(outBuffer,"%d",val);
+
+    if (incBuffer == "column check co2" && outBuffer == '1') {
+        // WemosTunnel tempDoor = new WemosTunnel(8083,"192.168.4.13","Door");
+        // tempDoor.sendCommand("door door open");
+        // delete tempDoor;
+        door.sendCommand("door door open");
+    }
+
     send(phpsocket, outBuffer, sizeof(outBuffer), 0);
     // after the outBuffer is sent back to PHP close the socket for the next command.
     close(phpsocket);
@@ -69,62 +77,73 @@ int TCPListener::run()
 int TCPListener::CheckIncCommands()
 {
     // define classes with port number, ipadd, name. (name is only used for Str.find and cout)
-    WemosTunnel Bed(8080,"192.168.4.10","Bed");
-    WemosTunnel Chair(8081,"192.168.4.11","Chair");
-    WemosTunnel Column(8082,"192.168.4.12","Column");
-    WemosTunnel Door(8083,"192.168.4.13","Door");
-    WemosTunnel Fridge(8084,"192.168.4.14","Fridge");
-    WemosTunnel Tablelamp(8085,"192.168.4.15","TableLamp");
-    WemosTunnel Wall(8086,"192.168.4.16","Wall");
+    // WemosTunnel Bed(8080,"192.168.4.10","Bed");
+    // WemosTunnel Chair(8081,"192.168.4.11","Chair");
+    // WemosTunnel Column(8082,"192.168.4.12","Column");
+    // WemosTunnel Door(8083,"192.168.4.13","Door");
+    // WemosTunnel Fridge(8084,"192.168.4.14","Fridge");
+    // WemosTunnel Tablelamp(8085,"192.168.4.15","TableLamp");
+    // WemosTunnel Wall(8086,"192.168.4.16","Wall");
 
-    // First check for destination 
-    // incBuffer[]convert to String for use in str.find
-    string str(incBuffer);
-    // size_t init for the if's
-    size_t bed = str.find(Bed.name);
-    size_t chair = str.find(Chair.name);
-    size_t column = str.find(Column.name);
-    size_t door = str.find(Door.name);
-    size_t fridge = str.find(Fridge.name);
-    size_t tablelamp = str.find(Tablelamp.name);
-    size_t wall = str.find(Wall.name);
+    // // First check for destination 
+    // // incBuffer[]convert to String for use in str.find
+    // string str(incBuffer);
+    // // size_t init for the if's
+    // size_t bed = str.find(Bed.name);
+    // size_t chair = str.find(Chair.name);
+    // size_t column = str.find(Column.name);
+    // size_t door = str.find(Door.name);
+    // size_t fridge = str.find(Fridge.name);
+    // size_t tablelamp = str.find(Tablelamp.name);
+    // size_t wall = str.find(Wall.name);
 
     // check the incoming command for destination.
     // if the command contains "bed" send command to right class.
-    if (bed!=string::npos)
-    {
-        str = "";
-        return(Bed.sendCommand(incBuffer));
+
+    // if (bed!=string::npos)
+    // {
+    //     str = "";
+    //     return(Bed.sendCommand(incBuffer));
+    // }
+    // if (chair!=string::npos)
+    // {
+    //     str = "";
+    //     return(Chair.sendCommand(incBuffer));
+    // }
+    // if (column!=string::npos)
+    // {
+    //     str = "";
+    //     return(Column.sendCommand(incBuffer));
+    // }
+    // if (door!=string::npos)
+    // {
+    //     str = "";
+    //     return(Door.sendCommand(incBuffer));
+    // }
+    // if (fridge!=string::npos)
+    // {
+    //     str = "";
+    //     return(Fridge.sendCommand(incBuffer));
+    // }
+    // if (tablelamp!=string::npos)
+    // {
+    //     str = "";
+    //     return(Tablelamp.sendCommand(incBuffer));
+    // }
+    // if (wall!=string::npos)
+    // {
+    //     str = "";
+    //     return(Wall.sendCommand(incBuffer));
+    // }
+
+    string str(incBuffer);
+
+    for (int i = 0; i < list.size()-1; i++) {
+        if(str.find((size_t)list.at(i).name) != string::npos) {
+            str = "";
+            return (list.at(i).sendCommand(incBuffer));
+        }
     }
-    if (chair!=string::npos)
-    {
-        str = "";
-        return(Chair.sendCommand(incBuffer));
-    }
-    if (column!=string::npos)
-    {
-        str = "";
-        return(Column.sendCommand(incBuffer));
-    }
-    if (door!=string::npos)
-    {
-        str = "";
-        return(Door.sendCommand(incBuffer));
-    }
-    if (fridge!=string::npos)
-    {
-        str = "";
-        return(Fridge.sendCommand(incBuffer));
-    }
-    if (tablelamp!=string::npos)
-    {
-        str = "";
-        return(Tablelamp.sendCommand(incBuffer));
-    }
-    if (wall!=string::npos)
-    {
-        str = "";
-        return(Wall.sendCommand(incBuffer));
-    }
+
     str = "";
 }
