@@ -12,7 +12,7 @@ if (isset($_GET["chair_motor_off"])) { echo "\n Reply From Server :".sendCMD("Ch
 if (isset($_GET["column_led1_on"])) { echo "\n Reply From Server :".sendCMD("Column led1 on"); }
 if (isset($_GET["column_led1_off"])) { echo "\n Reply From Server :".sendCMD("Column led1 off"); }
 if (isset($_GET["column_buzzer_on"])) { $column_buzzer = 1; echo "\n Reply From Server :".sendCMD("Column buzzer on");  }
-if (isset($_GET["column_buzzer_off"])) { $column_buzzer = 0; echo "\n Reply From Server :".sendCMD("Chair buzzer off");  }
+if (isset($_GET["column_buzzer_off"])) { $column_buzzer = 0; echo "\n Reply From Server :".sendCMD("Column buzzer off");  }
 
 if (isset($_GET["door_led1_on"])) { echo "\n Reply From Server :".sendCMD("Door led1 on"); }
 if (isset($_GET["door_led1_off"])) { echo "\n Reply From Server :".sendCMD("Door led1 off"); }
