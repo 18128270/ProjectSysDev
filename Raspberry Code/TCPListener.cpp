@@ -1,32 +1,27 @@
 #include "TCPListener.h"
 #include "WemosTunnel.h"
 
-
-int TCPListener::init() 
-{
-    // initialize Server Socket(listener)
-    if ((m_socket = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
-    {
+int TCPListener::init() {
+    // initialize server socket(listener)
+    if ((m_socket = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
         cerr << ("socket failed");
         exit(EXIT_FAILURE);
     }
 
     cout << "Socket Connection is up and about" << endl;
 
-    // bind Port&IP to socket
+    // bind port & IP to socket
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;   //INADDR_ANY;inet_addr("localhost");
     address.sin_port = htons(m_port);
 
-    if (bind(m_socket, (sockaddr*)&address, sizeof(address)) < 0) 
-    {
+    if (bind(m_socket, (sockaddr*)&address, sizeof(address)) < 0) {
         cerr << ("bind failed");
         exit(EXIT_FAILURE);
     }
 
-    // Start Listener    
-    if (listen(m_socket, 3) < 0) 
-    {
+    // start listener    
+    if (listen(m_socket, 3) < 0) {
         cerr << ("not listening");
         exit(EXIT_FAILURE);
     }
@@ -34,40 +29,41 @@ int TCPListener::init()
     return 0;
 }
 
-int TCPListener::run() 
-{
-    // Accept incoming (from PHP socket)
+int TCPListener::run() {
+    // accept incoming (from PHP socket)
     addrlen = sizeof(struct sockaddr_in);
-    cout << " " << endl;
+    cout << "" << endl;
     cout << "=== Waiting for incoming messages ===" << endl;
-    if ((phpsocket = accept(m_socket, (struct sockaddr*)&address, &addrlen)) < 0) 
-    {
+    if ((phpsocket = accept(m_socket, (struct sockaddr*)&address, &addrlen)) < 0) {
         cerr << "Accepting failed";
         exit(EXIT_FAILURE);
     }
 
-    // Read the incoming msg, store in incBuffer
-    if (bytesBuff = read(phpsocket, incBuffer, sizeof(incBuffer)) <= 0) 
-    {
+    // read the incoming msg, store in incBuffer
+    if (bytesBuff = read(phpsocket, incBuffer, sizeof(incBuffer)) <= 0) {}
 
-    }
     memset(outBuffer, 0, sizeof(outBuffer));
 
     // cool int to string convert to be able to use send().
     val = CheckIncCommands();
     sprintf(outBuffer,"%d",val);
+
+    if (incbuffer == "bed check force" && val == 1) {
+        WemosTunnel Column(8082,"192.168.4.12","Column");
+        Column.sendCommand("buzzer on");
+    }
+
     send(phpsocket, outBuffer, sizeof(outBuffer), 0);
     // after the outBuffer is sent back to PHP close the socket for the next command.
     close(phpsocket);
     // clear buffers so no old commands gets used.
     memset(outBuffer, 0, sizeof(outBuffer));
-    memset(incBuffer, 0, sizeof(incBuffer)); 
+    memset(incBuffer, 0, sizeof(incBuffer));
 
     return 0;
 }
 
-int TCPListener::CheckIncCommands()
-{
+int TCPListener::CheckIncCommands() {
     // define classes with port number, ipadd, name. (name is only used for Str.find and cout)
     WemosTunnel Bed(8080,"192.168.4.10","Bed");
     WemosTunnel Chair(8081,"192.168.4.11","Chair");
@@ -77,9 +73,10 @@ int TCPListener::CheckIncCommands()
     WemosTunnel Tablelamp(8085,"192.168.4.15","TableLamp");
     WemosTunnel Wall(8086,"192.168.4.16","Wall");
 
-    // First check for destination 
+    // first check for destination
     // incBuffer[]convert to String for use in str.find
     string str(incBuffer);
+
     // size_t init for the if's
     size_t bed = str.find(Bed.name);
     size_t chair = str.find(Chair.name);
@@ -91,40 +88,40 @@ int TCPListener::CheckIncCommands()
 
     // check the incoming command for destination.
     // if the command contains "bed" send command to right class.
-    if (bed!=string::npos)
-    {
+    if (bed!=string::npos) {
         str = "";
         return(Bed.sendCommand(incBuffer));
     }
-    if (chair!=string::npos)
-    {
+
+    if (chair!=string::npos) {
         str = "";
         return(Chair.sendCommand(incBuffer));
     }
-    if (column!=string::npos)
-    {
+
+    if (column!=string::npos) {
         str = "";
         return(Column.sendCommand(incBuffer));
     }
-    if (door!=string::npos)
-    {
+
+    if (door!=string::npos) {
         str = "";
         return(Door.sendCommand(incBuffer));
     }
-    if (fridge!=string::npos)
-    {
+
+    if (fridge!=string::npos) {
         str = "";
         return(Fridge.sendCommand(incBuffer));
     }
-    if (tablelamp!=string::npos)
-    {
+
+    if (tablelamp!=string::npos) {
         str = "";
         return(Tablelamp.sendCommand(incBuffer));
     }
-    if (wall!=string::npos)
-    {
+
+    if (wall!=string::npos) {
         str = "";
         return(Wall.sendCommand(incBuffer));
     }
+
     str = "";
 }

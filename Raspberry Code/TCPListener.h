@@ -1,15 +1,13 @@
 #include "WemosTunnel.h"
 
-
 using namespace std;
 
 #pragma once
-class TCPListener
-{
+class TCPListener {
 public:
 	
 	TCPListener(int port) :
-		m_port(port) { }
+		m_port(port) {}
 
 	// initialize the listener
 	int init();
@@ -19,8 +17,6 @@ public:
 
     // checks for incoming commands and do shit, returns output of the command to php
     int CheckIncCommands();
-
-	
 
 protected:
 
