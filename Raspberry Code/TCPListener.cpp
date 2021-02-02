@@ -57,9 +57,9 @@ int TCPListener::run()
     val = CheckIncCommands();
     sprintf(outBuffer,"%d",val);
 
-    if (incBuffer == "column check co2" && outBuffer == '1') {
-        // WemosTunnel tempDoor = new WemosTunnel(8083,"192.168.4.13","Door");
-        // tempDoor.sendCommand("door door open");
+    if (incBuffer == "column check co2" && val == 1) {
+        // WemosTunnel *tempDoor = new WemosTunnel(8083,"192.168.4.13","Door");
+        // tempDoor->sendCommand("door door open");
         // delete tempDoor;
         door.sendCommand("door door open");
     }
@@ -139,7 +139,7 @@ int TCPListener::CheckIncCommands()
     string str(incBuffer);
 
     for (int i = 0; i < list.size()-1; i++) {
-        if(str.find((size_t)list.at(i).name) != string::npos) {
+        if(str.find(list.at(i).name) != string::npos) {
             str = "";
             return (list.at(i).sendCommand(incBuffer));
         }

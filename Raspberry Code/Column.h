@@ -5,7 +5,7 @@ using namespace std;
 #pragma once
 class Column : public WemosTunnel
 {
-public:
-	Column(int DestPort, const char* DestAdd, string name) :
-		DestPort(DestPort), DestAdd(DestAdd), name(name)  { }
-}
+	public:
+		Column() { }
+		Column(int DestPort, const char* DestAdd, string name) : WemosTunnel(DestPort, DestAdd, name) { }
+};

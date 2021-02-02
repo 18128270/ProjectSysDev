@@ -21,7 +21,7 @@ using namespace std;
 class WemosTunnel
 {
 public:
-	
+	WemosTunnel() {}
 	WemosTunnel(int DestPort, const char* DestAdd, string name) :
 		DestPort(DestPort), DestAdd(DestAdd), name(name)  { }
 

@@ -1,4 +1,10 @@
-#include "WemosTunnel.h"
+#include "Bed.h"
+#include "Chair.h"
+#include "Column.h"
+#include "Door.h"
+#include "Fridge.h"
+#include "TableLamp.h"
+#include "Wall.h"
 #include <vector>
 
 using namespace std;
@@ -9,7 +15,23 @@ class TCPListener
 public:
 	
 	TCPListener(int port) :
-		m_port(port) { }
+		m_port(port) {
+			bed = Bed(8080,"192.168.4.10","bed");
+			chair = Chair(8081,"192.168.4.11","chair");
+			column = Column(8082,"192.168.4.12","column");
+			door = Door(8083,"192.168.4.13","door");
+			fridge = Fridge(8084,"192.168.4.14","fridge");
+			tablelamp = TableLamp(8085,"192.168.4.15","tablelamp");
+			wall = Wall(8086,"192.168.4.16","wall");
+
+			list.push_back(bed);
+			list.push_back(chair);
+			list.push_back(column);
+			list.push_back(door);
+			list.push_back(fridge);
+			list.push_back(tablelamp);
+			list.push_back(wall);
+		}
 
 	// initialize the listener
 	int init();
@@ -22,21 +44,13 @@ public:
 
 	vector<WemosTunnel> list;
 
-	WemosTunnel bed(8080,"192.168.4.10","bed");
-    WemosTunnel chair(8081,"192.168.4.11","chair");
-    WemosTunnel column(8082,"192.168.4.12","column");
-    WemosTunnel door(8083,"192.168.4.13","door");
-    WemosTunnel fridge(8084,"192.168.4.14","fridge");
-    WemosTunnel tablelamp(8085,"192.168.4.15","tablelamp");
-    WemosTunnel wall(8086,"192.168.4.16","wall");
-
-	list.push_back(bed);
-	list.push_back(chair);
-	list.push_back(column);
-	list.push_back(door);
-	list.push_back(fridge);
-	list.push_back(tablelamp);
-	list.push_back(wall);
+	Bed bed;
+	Chair chair;
+	Column column;
+	Door door;
+	Fridge fridge;
+	TableLamp tablelamp;
+	Wall wall;
 
 private:
     struct sockaddr_in address;
@@ -50,4 +64,6 @@ private:
     char incBuffer[1024];               // stores incoming buffer from Wemos
 	char outBuffer[100];
 	int val;							// return value of the checkfunction
+
+	
 };
