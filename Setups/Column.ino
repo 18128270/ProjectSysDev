@@ -237,7 +237,7 @@ boolean Check_Pushbutton1() {
 unsigned int Check_CO2(){
   Wire.requestFrom(0x36, 2);
   unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
-  if(anin0 >= 10000) {
+  if(anin0 >= 1000) {
     Buzzer_on();
     return 1;
   } else {
