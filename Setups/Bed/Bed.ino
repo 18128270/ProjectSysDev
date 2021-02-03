@@ -6,19 +6,19 @@
 #define I2C_SDL D1
 #define I2C_SDA D2
 
-// replace with your network credentials
+// Replace with your network credentials
 const char* ssid     = "WiFi_D3_GP11";
 const char* password = "GP11Wier?";
 
-// define port for network
+// Define port for network
 #define PORT 8080
 
-// define static IP and gateway
+// Define static IP and gateway
 IPAddress local_IP(192,168,4,10);
 IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
-// set web server port number to PORT
+// Set web server port number to PORT
 WiFiServer socketServer(PORT);
 
 // init vars
@@ -51,13 +51,13 @@ void loop() {
   }
   i = 0;
 
-  // listen for incoming clients
+  // Listen for incoming clients
   WiFiClient client = socketServer.available();
 
   // pushbutton1 toggles led1
   pushButton1();
   
-  // if a new client connects,
+  // If a new client connects,
   if (client) {
     Serial.println("New Client is connected");
 
@@ -66,10 +66,10 @@ void loop() {
      while (client.connected()) {
 
         while (client.available() > 0) {
-          // stores buffer in string c
+          //Stores buffer in string c
           char c = client.read();
           if (i<100){
-            buffer[i] = c;  // stores buffer in string c
+            buffer[i] = c;  //Stores buffer in string c
             i++;
             buffer[i] = '\0';
           }
@@ -103,7 +103,7 @@ void loop() {
 }
 
 void config_PCA9554() {
-  // config PCA9554
+  //Config PCA9554
   Wire.beginTransmission(0x38);
   Wire.write(byte(0x03));
   Wire.write(byte(0x0F));
@@ -111,7 +111,7 @@ void config_PCA9554() {
 }
 
 void config_MAX11647() {
-  // config MAX11647
+  //Config MAX11647
   Wire.beginTransmission(0x36);
   Wire.write(byte(0xA2));          
   Wire.write(byte(0x03));
@@ -119,7 +119,7 @@ void config_MAX11647() {
 }
 
 void config_WifiConnect(){
-  // configures static IP address
+  // Configures static IP address
   if (!WiFi.config(local_IP, gateway, subnet)) {
     Serial.println("STA Failed to configure");
   }
@@ -211,7 +211,7 @@ boolean Check_Pushbutton1() {
 boolean Check_Force() {
   Wire.requestFrom(0x36, 2);
   unsigned int anin0 = ((Wire.read()&0x03) << 8) | Wire.read();
-  // serial.println(anin0);
+  //Serial.println(anin0);
 
   if(anin0 >= 400) {
     return 1;
