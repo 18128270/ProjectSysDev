@@ -15,7 +15,7 @@ BedAndLed::BedAndLed(string name)
 
 BedAndLed::check(string name)
 {
-	if (name.find("bed") != string::npos)
+	if (name.find("bed check force") != string::npos)
 	{
 		return 1;
 	}
