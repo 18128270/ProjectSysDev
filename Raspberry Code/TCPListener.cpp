@@ -1,4 +1,5 @@
 #include "TCPListener.h"
+#include "BedAndLed.h"
 
 
 int TCPListener::init() 
@@ -93,7 +94,7 @@ int TCPListener::CheckIncCommands()
     if (bed!=string::npos)
     {
         /*Check if the command is "check force, if so turn tablelamp off"*/
-        BedAndLed check;
+        BedAndLed check(str);
         if (check.check(str)>0) 
         {
             str = "";

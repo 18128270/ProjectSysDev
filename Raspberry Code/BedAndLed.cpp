@@ -13,9 +13,9 @@ BedAndLed::BedAndLed(string name)
 	}
 };
 
-BedAndLed::check(string name)
+int BedAndLed::check(string name)
 {
-	if (name.find("bed check force") != string::npos)
+	if (name.find("Bed check force") != string::npos)
 	{
 		return 1;
 	}
