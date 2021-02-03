@@ -58,9 +58,8 @@ int TCPListener::run()
     sprintf(outBuffer,"%d",val);
 
     string str(incBuffer);
-    if (str.find("column check co2")!=string::npos && val == 1) {
-        cout << "test" << endl;
-        door.sendCommand("door door open");
+    if (str.find("Column check co2")!=string::npos && val == 1) {
+        door.sendCommand("Door door open");
     }
 
     send(phpsocket, outBuffer, sizeof(outBuffer), 0);

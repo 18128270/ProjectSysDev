@@ -16,13 +16,13 @@ public:
 	
 	TCPListener(int port) :
 		m_port(port) {
-			bed = Bed(8080,"192.168.4.10","bed");
-			chair = Chair(8081,"192.168.4.11","chair");
-			column = Column(8082,"192.168.4.12","column");
-			door = Door(8083,"192.168.4.13","door");
-			fridge = Fridge(8084,"192.168.4.14","fridge");
-			tablelamp = TableLamp(8085,"192.168.4.15","tablelamp");
-			wall = Wall(8086,"192.168.4.16","wall");
+			bed = Bed(8080,"192.168.4.10","Bed");
+			chair = Chair(8081,"192.168.4.11","Chair");
+			column = Column(8082,"192.168.4.12","Column");
+			door = Door(8083,"192.168.4.13","Door");
+			fridge = Fridge(8084,"192.168.4.14","Fridge");
+			tablelamp = TableLamp(8085,"192.168.4.15","TableLamp");
+			wall = Wall(8086,"192.168.4.16","Wall");
 
 			list.push_back(bed);
 			list.push_back(chair);
