@@ -57,10 +57,9 @@ int TCPListener::run()
     val = CheckIncCommands();
     sprintf(outBuffer,"%d",val);
 
-    if (incBuffer == "column check co2" && val == 1) {
-        // WemosTunnel *tempDoor = new WemosTunnel(8083,"192.168.4.13","Door");
-        // tempDoor->sendCommand("door door open");
-        // delete tempDoor;
+    string str(incBuffer);
+    if (str.find("column check co2")!=string::npos && val == 1) {
+        cout << "test" << endl;
         door.sendCommand("door door open");
     }
 
