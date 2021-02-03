@@ -1,5 +1,4 @@
 #include "TCPListener.h"
-#include "WemosTunnel.h"
 
 
 int TCPListener::init() 
@@ -93,8 +92,14 @@ int TCPListener::CheckIncCommands()
     // if the command contains "bed" send command to right class.
     if (bed!=string::npos)
     {
-        str = "";
-        return(Bed.sendCommand(incBuffer));
+        /*Check if the command is "check force, if so turn tablelamp off"*/
+        BedAndLed check;
+        if (check.check(str)>0) 
+        {
+            str = "";
+            return(Bed.sendCommand(incBuffer));
+        }
+        
     }
     if (chair!=string::npos)
     {

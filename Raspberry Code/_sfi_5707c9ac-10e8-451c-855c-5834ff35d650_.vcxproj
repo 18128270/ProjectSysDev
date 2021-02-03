@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+	  <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	    <ItemGroup Label="ProjectConfigurations">
+	      <ProjectConfiguration Include="Debug|Win32">
+	        <Configuration>Debug</Configuration>
+	        <Platform>Win32</Platform>
+	      </ProjectConfiguration>
+	    </ItemGroup>
+	    <PropertyGroup Label="Globals">
+	      <ProjectName>Miscellaneous Files</ProjectName>
+	      <ProjectGuid>{a7a2a36c-3c53-4ccb-b52e-425623e2dda5}</ProjectGuid>
+	      <ISenseProject>true</ISenseProject>
+	      <Keyword>SingleFileISense</Keyword>
+	      <UseDefaultPropertyPageSchemas>false</UseDefaultPropertyPageSchemas>
+	      <PropertyManagerSupported>false</PropertyManagerSupported>
+	    </PropertyGroup>
+	    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+	    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+	      <ConfigurationType>Application</ConfigurationType>
+	      <UseDebugLibraries>true</UseDebugLibraries>
+	      <PlatformToolset>v142</PlatformToolset>
+	    </PropertyGroup>
+	    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+	    <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+	      <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+	    </ImportGroup>
+	    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+	    <ItemGroup>
+	      <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\ProjectItemsSchema.xml" />
+	      <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\isense_general.xml">
+	        <Context>File;Project</Context>
+	      </PropertyPageSchema>
+	    </ItemGroup>
+	    <PropertyGroup>
+	      <!-- Disable project retargeting -->
+	      <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+	    </PropertyGroup>
+	  </Project>

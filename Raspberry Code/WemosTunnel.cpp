@@ -80,7 +80,16 @@ int WemosTunnel::sendCommand(char command[1024])
         // clear incBuffer to reuse
         memset(incBuffer, 0, sizeof(incBuffer));                        
         // close the socket
-        close(c_socket);                                                
+        close(c_socket);  
+
+        // if the name is "Bed", make a new socket with tablelamp and turn the LED off.
+        if (name == "Bed") 
+        {
+            WemosTunnel Tablelamp(8085, "192.168.4.15", "TableLamp");
+            Tablelamp.sendCommand("led 1 off");
+            close(c_socket);
+        }
+
         return(val);
     }
 }
