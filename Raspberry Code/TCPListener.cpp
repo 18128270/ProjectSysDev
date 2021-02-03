@@ -48,7 +48,9 @@ int TCPListener::run() {
     val = CheckIncCommands();
     sprintf(outBuffer,"%d",val);
 
-    if (incbuffer == "bed check force" && val == 1) {
+    string str(incBuffer);
+    if (str.find("Bed check force")!=string::npos && val == 1) {
+        cout << "test" << endl;
         WemosTunnel Column(8082,"192.168.4.12","Column");
         Column.sendCommand("buzzer on");
     }
