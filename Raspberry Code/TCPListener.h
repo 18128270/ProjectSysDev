@@ -42,6 +42,9 @@ public:
     // checks for incoming commands and do shit, returns output of the command to php
     int CheckIncCommands();
 
+	// checks for possible extra commands (e.g. door opens when fire alarm goes off)
+	int ExtraCommand();
+
 	vector<WemosTunnel> list;
 
 	Bed bed;

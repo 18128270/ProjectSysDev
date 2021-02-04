@@ -57,10 +57,7 @@ int TCPListener::run()
     val = CheckIncCommands();
     sprintf(outBuffer,"%d",val);
 
-    string str(incBuffer);
-    if (str.find("Column check co2")!=string::npos && val == 1) {
-        door.sendCommand("Door door open");
-    }
+    ExtraCommand();
 
     send(phpsocket, outBuffer, sizeof(outBuffer), 0);
     // after the outBuffer is sent back to PHP close the socket for the next command.
@@ -84,4 +81,19 @@ int TCPListener::CheckIncCommands()
     }
 
     str = "";
+}
+
+int TCPListener::ExtraCommand()
+{
+    string str(incBuffer);
+
+    if (str.find("Column check co2")!=string::npos && val == 1) {
+        door.sendCommand("Door door open");
+    }
+
+    // possible other "extra" commands
+
+    str = "";
+
+    return 0;
 }
