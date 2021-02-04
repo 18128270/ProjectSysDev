@@ -9,8 +9,8 @@ BedAndLed::BedAndLed(string name)
 	{
 		WemosTunnel Tablelamp(8085, "192.168.4.15", "TableLamp");
 		Tablelamp.sendCommand("led1 off");
-		
 	}
+	
 };
 
 int BedAndLed::check(string name)
