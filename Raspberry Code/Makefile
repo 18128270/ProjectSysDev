@@ -7,7 +7,7 @@ APP_DIR  := $(BUILD)/bin
 TARGET   := programKora
 #INCLUDE  := -Iinclude/
 SRC      := $(wildcard *.cpp)
-PIIP	 := alissapi
+PIIP	 := 192.168.4.1
    
 OBJECTS  := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 DEPENDENCIES := $(OBJECTS:.o=.d)
