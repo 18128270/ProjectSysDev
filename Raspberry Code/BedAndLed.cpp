@@ -7,8 +7,8 @@ BedAndLed::BedAndLed(string name)
 {
 	if (check(name))
 	{
-		WemosTunnel Tablelamp(8085, "192.168.4.15", "TableLamp");
-		Tablelamp.sendCommand("led1 off");
+		WemosTunnel Chair(8081, "192.168.4.11", "Chair");
+		Chair.sendCommand("chair motor on");
 	}
 	
 };
