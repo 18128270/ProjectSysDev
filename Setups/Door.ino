@@ -49,96 +49,7 @@ void setup() {
   doorServo.write(83);
 }
 
-void loop() {
-  
-  while (i<100){
-    buffer[i]= '\0';
-    i++;
-  }
-  i = 0;
-  while (i<100){
-    outbuffer[i]= '\0';
-    i++;
-  }
-  i = 0;
 
-  // Listen for incoming clients
-  WiFiClient client = socketServer.available();
-
-  // pushbutton1 toggles led1
-  pushButton1();
-
-  // pushbutton2();
-  pushButton2();  
-
-  // If a new client connects,
-  if (client) {
-    Serial.println("New Client is connected");
-
-    if (client) {
-
-     while (client.connected()) {
-
-        while (client.available() > 0) {
-          //Stores buffer in string c
-          char c = client.read();
-          if (i<100){
-            buffer[i] = c;  //Stores buffer in string c
-            i++;
-            buffer[i] = '\0';
-          }
-          
-          if(strstr(buffer,"led1 on")){
-            LED1_on();
-            client.write("ACK");
-          }
-          
-          if(strstr(buffer,"led1 off")){
-            LED1_off();
-            client.write("ACK");
-          }
-          
-          if(strstr(buffer,"led2 on")){
-            LED2_on();
-            client.write("ACK");
-          }
-          
-          if(strstr(buffer,"led2 off")){
-            LED2_off();
-            client.write("ACK");
-          }
-
-          if(strstr(buffer,"door open")){
-            Door_open();
-            client.write("ACK");
-          }
-
-          if(strstr(buffer,"door close")){
-            Door_close();
-            client.write("ACK");
-          }
-          
-          if(strstr(buffer,"check door")){
-            sprintf(outbuffer, "%d", Check_Door());
-            client.write(outbuffer);
-          }
-
-          if(strstr(buffer,"check led1")){
-            sprintf(outbuffer, "%d", Check_Led1());
-            client.write(outbuffer);
-
-          if(strstr(buffer,"check led2")){
-            sprintf(outbuffer, "%d", Check_Led2());
-            client.write(outbuffer);
-          }
-        }
-      }
-    Serial.println(" ");
-    Serial.println("Client disconnected");
-    i = 0;
-    }
-  }
-}
 
 void config_PCA9554() {
   //Config PCA9554
@@ -199,6 +110,7 @@ void pushButton1(){
         Door_open();
       }
 }
+}
 
 // TODO deze knop moet nog iets doen
 void pushButton2(){
@@ -213,6 +125,7 @@ void pushButton2(){
     if(!(Check_Pushbutton2()) && doorstate == 1){
         Door_close();
       }
+}
 }
 
 void LED1_on() {
@@ -320,4 +233,96 @@ boolean Check_Pushbutton2() {
   } else { 
     return 0; 
   }
+}
+
+void loop() {
+  
+  while (i<100){
+    buffer[i]= '\0';
+    i++;
+  }
+  i = 0;
+  while (i<100){
+    outbuffer[i]= '\0';
+    i++;
+  }
+  i = 0;
+
+  // Listen for incoming clients
+  WiFiClient client = socketServer.available();
+
+  // pushbutton1 toggles led1
+  pushButton1();
+
+  // pushbutton2();
+  pushButton2();  
+
+  // If a new client connects,
+  if (client) {
+    Serial.println("New Client is connected");
+
+    if (client) {
+
+     while (client.connected()) {
+
+        while (client.available() > 0) {
+          //Stores buffer in string c
+          char c = client.read();
+          if (i<100){
+            buffer[i] = c;  //Stores buffer in string c
+            i++;
+            buffer[i] = '\0';
+          }
+          
+          if(strstr(buffer,"led1 on")){
+            LED1_on();
+            client.write("ACK");
+          }
+          
+          if(strstr(buffer,"led1 off")){
+            LED1_off();
+            client.write("ACK");
+          }
+          
+          if(strstr(buffer,"led2 on")){
+            LED2_on();
+            client.write("ACK");
+          }
+          
+          if(strstr(buffer,"led2 off")){
+            LED2_off();
+            client.write("ACK");
+          }
+
+          if(strstr(buffer,"door open")){
+            Door_open();
+            client.write("ACK");
+          }
+
+          if(strstr(buffer,"door close")){
+            Door_close();
+            client.write("ACK");
+          }
+          
+          if(strstr(buffer,"check door")){
+            sprintf(outbuffer, "%d", Check_Door());
+            client.write(outbuffer);
+          }
+
+          if(strstr(buffer,"check led1")){
+            sprintf(outbuffer, "%d", Check_Led1());
+            client.write(outbuffer);
+
+          if(strstr(buffer,"check led2")){
+            sprintf(outbuffer, "%d", Check_Led2());
+            client.write(outbuffer);
+          }
+        }
+      }
+    Serial.println(" ");
+    Serial.println("Client disconnected");
+    i = 0;
+    }
+  }
+}
 }

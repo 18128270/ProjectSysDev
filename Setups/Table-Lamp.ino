@@ -28,12 +28,13 @@ WiFiServer socketServer(PORT);
 #define DATA_PIN    D5      // LED data pin
 #define BRIGHTNESS  200     // Brightness range [OFF..ON] = [0..255]
 
-CRGB leds[NUM_LEDS]
+CRGB leds[NUM_LEDS];
 
 // init vars
 int i = 0;
 char buffer[100];
 char outbuffer[100];
+int sensorTriggered = 0; 
 
 int ledstate = 0;
 int lcdstate = 0;
@@ -72,7 +73,7 @@ void loop() {
   WiFiClient client = socketServer.available();
 
   // check if sensor is triggered, turns led auto off after maxTijd is exceeded
-  if(Check_Sensor == 1 || ledstate == 1){
+  if(Check_Sensor() == 1 || ledstate == 1){
     LedAutoOff();
   }
 

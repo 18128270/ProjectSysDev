@@ -28,12 +28,13 @@ WiFiServer socketServer(PORT);
 #define DATA_PIN    D5      // LED data pin
 #define BRIGHTNESS  200     // Brightness range [OFF..ON] = [0..255]
 
-CRGB leds[NUM_LEDS];
+CRGB Leds[NUM_LEDS];
 
 // init vars
 int i = 0;
 char buffer[100];
 char outbuffer[100];
+int color = 0;
 
 int ledstate = 0;
 int lcdstate = 0;
@@ -48,7 +49,7 @@ void setup() {
   config_SocketServer();
   
   // FastLED library init
-  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
+  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(Leds, NUM_LEDS);
 }
 
 void loop() {
@@ -68,7 +69,7 @@ void loop() {
   WiFiClient client = socketServer.available();
 
   // === MUST TEST === Potmeter changes LED colour hopefully
-  setColour();
+  SetColour();
   
   // If a new client connects,
   if (client) {
@@ -109,7 +110,7 @@ void loop() {
           }
 
           if(strstr(buffer,"check led1")){
-            sprintf(outbuffer, "%d", Check_Led1();
+            sprintf(outbuffer, "%d", Check_Led1());
             client.write(outbuffer);
           }
 
@@ -193,7 +194,7 @@ void LCD_panel_off() {
 }
 
 void LED1_on() {
-  fill_solid( &(leds[0]), 3, CRGB(250, 0, 0));
+  fill_solid( &(Leds[0]), 3, CRGB(250, 0, 0));
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.show();
   ledstate = 1;
@@ -234,7 +235,7 @@ void SetColour(){
     if (color>255){
       color = 255;
     }
-    color = val
+    color = val;
     R = color;
     G = 0;
     B = 0;
