@@ -93,12 +93,16 @@ int TCPListener::CheckIncCommands()
     // if the command contains "bed" send command to right class.
     if (bed!=string::npos)
     {
-        /*Check if the command is "check force, if so turn tablelamp off"*/
-        BedAndLed check(str);
-        if (check.check(str)>0) 
-        {
-            str = "";
-            return(Bed.sendCommand(incBuffer));
+        /*Check if the command is "check force", if so turn tablelamp off*/
+        
+        if (Bed.sendCommand(incBuffer) > 1) 
+        {   
+            BedAndLed check(str);
+            if(check.check(str) > 0)
+            {
+                    str = "";
+                    return(Bed.sendCommand(incBuffer));
+            }
         }
         
     }
