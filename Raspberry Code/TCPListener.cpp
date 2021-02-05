@@ -2,10 +2,10 @@
 #include "WemosTunnel.h"
 
 
-int TCPListener::init() 
+int TCPListener::init()
 {
     // initialize Server Socket(listener)
-    if ((m_socket = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
+    if ((m_socket = socket(AF_INET, SOCK_STREAM, 0)) == 0)
     {
         cerr << ("socket failed");
         exit(EXIT_FAILURE);
@@ -18,14 +18,14 @@ int TCPListener::init()
     address.sin_addr.s_addr = INADDR_ANY;   //INADDR_ANY;inet_addr("localhost");
     address.sin_port = htons(m_port);
 
-    if (bind(m_socket, (sockaddr*)&address, sizeof(address)) < 0) 
+    if (bind(m_socket, (sockaddr*)&address, sizeof(address)) < 0)
     {
         cerr << ("bind failed");
         exit(EXIT_FAILURE);
     }
 
-    // Start Listener    
-    if (listen(m_socket, 3) < 0) 
+    // Start Listener
+    if (listen(m_socket, 3) < 0)
     {
         cerr << ("not listening");
         exit(EXIT_FAILURE);
@@ -34,20 +34,20 @@ int TCPListener::init()
     return 0;
 }
 
-int TCPListener::run() 
+int TCPListener::run()
 {
     // Accept incoming (from PHP socket)
     addrlen = sizeof(struct sockaddr_in);
     cout << " " << endl;
     cout << "=== Waiting for incoming messages ===" << endl;
-    if ((phpsocket = accept(m_socket, (struct sockaddr*)&address, &addrlen)) < 0) 
+    if ((phpsocket = accept(m_socket, (struct sockaddr*)&address, &addrlen)) < 0)
     {
         cerr << "Accepting failed";
         exit(EXIT_FAILURE);
     }
 
     // Read the incoming msg, store in incBuffer
-    if (bytesBuff = read(phpsocket, incBuffer, sizeof(incBuffer)) <= 0) 
+    if (bytesBuff = read(phpsocket, incBuffer, sizeof(incBuffer)) <= 0)
     {
 
     }
@@ -56,12 +56,30 @@ int TCPListener::run()
     // cool int to string convert to be able to use send().
     val = CheckIncCommands();
     sprintf(outBuffer,"%d",val);
+	
+	//if checkup was for co2 and co2 is too high, open door. 
+   if(val == 1 && ((strcmp(incBuffer,"Column check co2")) == 0)) {
+     WemosTunnel Door(8083,"192.168.4.13","Door");
+     Door.sendCommand("door open");
+   }
+   
+   //if someone is in bed, light led next to door. 
+   if((strcmp(incBuffer,"Bed check force")) == 0) {
+	   if(val == 1) {
+		   WemosTunnel Door(8083,"192.168.4.13","Door");
+		   Door.sendCommand("led1 on");
+	   } else if (val == 0) {
+		   WemosTunnel Door(8083,"192.168.4.13","Door");
+		   Door.sendCommand("led1 off");
+	   }
+   }
+
     send(phpsocket, outBuffer, sizeof(outBuffer), 0);
     // after the outBuffer is sent back to PHP close the socket for the next command.
     close(phpsocket);
     // clear buffers so no old commands gets used.
     memset(outBuffer, 0, sizeof(outBuffer));
-    memset(incBuffer, 0, sizeof(incBuffer)); 
+    memset(incBuffer, 0, sizeof(incBuffer));
 
     return 0;
 }
@@ -77,7 +95,7 @@ int TCPListener::CheckIncCommands()
     WemosTunnel Tablelamp(8085,"192.168.4.15","TableLamp");
     WemosTunnel Wall(8086,"192.168.4.16","Wall");
 
-    // First check for destination 
+    // First check for destination
     // incBuffer[]convert to String for use in str.find
     string str(incBuffer);
     // size_t init for the if's
